@@ -2,11 +2,11 @@
 A sample lab that demonstrates a simple game using Azure Serverless and Particle Internet Button Devices
 
 Game API's
-- register device: Adds a device to the game
-- start game: starts a game, ends ability to register new devices and sends first "ping" to a device
-- pong: register a "pong" back from a device that was "pinged". can be success or failure. failures deactivates device in the game 
-- end game: stop game after there's assumed to be a winning player
-- send game status: send back ids of devices still in the game and state (active/inactive)
+- register device (POST): Adds a device to the game
+- start game (PUT): starts a game, ends ability to register new devices and sends first "ping" to a device
+- pong (PUT): register a "pong" back from a device that was "pinged". can be success or failure. failures deactivates/removes device in the game 
+- end game (DELETE): stop game after there's assumed to be a winning player
+- send game status (GET): send back ids of devices still in the game and state (active/inactive)
 
 Button Actions:
 - on startup it will register itself with the game, starts flashing yellow when registration is successful
