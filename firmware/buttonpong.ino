@@ -1,79 +1,59 @@
 #include <InternetButton.h>
+#include "InternetButtonEvents.h"
 
-#define INTERNET_BUTTON_TYPE    1
-#define PRESS_AND_HOLD          3*1000
-#define CLICK_THRESHOLD         500
+#define INTERNET_BUTTON_TYPE 0
 
-unsigned long downStart;
-unsigned long downTime;
-
-unsigned long upStart;
-unsigned long upTime;
-
-bool current = false;
-bool previous = false;
+bool isRegistered = false;
 
 InternetButton b = InternetButton();
+InternetButtonEvents buttonEvents = InternetButtonEvents(b);
 
-//// TODO ///////
-// Implement state change button
-// Factor state change button into seperate class lib
-// particle function ping(time ms)
+//// TODO
+// Implement state change button X
+// Factor state change button into seperate class lib X
+// implement all 4 buttons
+// publish to particle libraries
+// particle function ping(time ms) 
+
 // call pong(true/false) 
+/// if  failed registred is 
 
 void setup() {
     Serial.begin(9600);
     Particle.function("ping", ping);
+    Particle.subscribe("hook-response/pong", registrationHandler);
+    
+    buttonEvents.onAllButtonsClicked(allButtonsClickedHandler);
+    buttonEvents.onAllButtonsOn(allButtonsOnHandler);
 
     b.begin(INTERNET_BUTTON_TYPE);
+    
 }
 
 void loop(){
+    buttonEvents.update();
     
-    if(b.allButtonsOn()){
-        
-        // start down timer
-        if (!previous) {
-            downStart = millis();
-            previous = true;
-        }
-        
-        // update down timer
-        downTime = millis() - downStart;
-        
-        if (downTime > CLICK_THRESHOLD && !current) {
-            current = true;
-            Serial.println("down");
-        }
-        
+    if (buttonEvents.allButtonsOn()) {
         b.allLedsOn(0,20,20);
-    }
-    else {
-        
-        // start up timer
-        if (previous) {
-            upStart = millis();
-            previous = false;
-        }
-        
-        // update up timer
-        upTime = millis() - upStart;
-        
-        if (upTime > CLICK_THRESHOLD && current) {
-            current = false;
-            
-            Serial.println("up");
-
-            // this is the click handler behavior
-            b.allLedsOn(20,20,0);
-            Particle.publish("pong", "TRUE");
-            Serial.println("pong");
-            delay(500);
-
-        }
-        
+    } else {
         b.allLedsOff();
     }
+}
+
+void allButtonsOnHandler() {
+    Serial.println("down");
+}
+
+void allButtonsClickedHandler() {
+    b.allLedsOn(20,20,0);
+    
+    Particle.publish("register", "TRUE");
+    Serial.println("register");
+    delay(500);
+}
+
+void registrationHandler(const char *event, const char *data) {
+    isRegistered = true;
 }
 
 int ping(String countdown) {
