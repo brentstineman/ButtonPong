@@ -6,7 +6,6 @@
 #define STATE_GAME_WAITING      1
 #define STATE_GAME_RESPONDING   2
 
-
 int gameState = STATE_GAME_OVER;
 unsigned long respondingTimeout;
 
@@ -97,16 +96,16 @@ void registrationHandler(const char *event, const char *data) {
 }
 
 int ping(String timeout) {
-    Serial.println("Received move: " + timeout + " seconds");
+    Serial.println("Received move: " + timeout + " milliseconds");
     
     if (gameState == STATE_GAME_WAITING) {
-        int timeoutVal = 5;
+        int timeoutVal = 5000;
         if (timeout != NULL) {
             timeoutVal = timeout.toInt();
         }
         
         b.rainbow(3);
-        respondingTimeout = millis() + timeoutVal*1000;
+        respondingTimeout = millis() + timeoutVal;
         
         gameState = STATE_GAME_RESPONDING;
     }
