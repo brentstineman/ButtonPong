@@ -4,20 +4,10 @@
 
 #define INTERNET_BUTTON_TYPE 0
 
-int gameState = 0; // 0 - gameover, 1 - waiting
+int gameState = 0; // 0 - gameover, 1 - waiting, 2 - responding
 
 InternetButton b = InternetButton();
 InternetButtonEvents buttonEvents = InternetButtonEvents(b);
-
-//// TODO
-// Implement state change button X
-// Factor state change button into seperate class lib X
-// implement all 4 buttons X
-// publish to particle libraries X
-// particle function ping(time ms) 
-
-// call pong(true/false) 
-/// if  failed registred is 
 
 void setup() {
     Serial.begin(9600);
@@ -81,10 +71,6 @@ void loop(){
     }
 }
 
-void buttonOnHandler(int buttonNumber) {
-
-}
-
 void allButtonsClickedHandler() {
     
     if (gameState == 0) {
@@ -94,8 +80,8 @@ void allButtonsClickedHandler() {
 }
 
 void buttonClickedHandler(int buttonNumber) {
-    if (gameState == 1) {
-        Particle.publish("ping", "TRUE");
+    if (gameState == 2) {
+        Particle.publish("pong", "TRUE");
     }
 }
 
@@ -106,8 +92,11 @@ void registrationHandler(const char *event, const char *data) {
 }
 
 int ping(String countdown) {
+    b.rainbow(5);
     
-    // TODO
+    if (gameState == 1) {
+        gameState = 2;
+    }
     
     return 1;
 }
