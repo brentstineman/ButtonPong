@@ -50,8 +50,11 @@ The API consists of two functions, each implementing one method.
 This API has intentially been kept minimal to allow for plenty of opportunties for extension and enhancement. 
 
 #### Testing the API
-A PostMan collection that contains the methods for testing the API has been provided in this repository. To use it you will need to set up an
-_**TODO:** finish this section_
+To make Testing the API easier, especially when just trying to learn what its doing. We've created a Postman collection (Button Pong.postman_collection.json) and exported it to this repository. This collection uses variables that should be defined in a cooresponding Postman environment. A sample environment file, to outline what values should be provided, has also been placed in the repository ((Button PongSample-Local.postman_environment.json))
+
+To use these files, simply [install Postman](https://www.getpostman.com/) and import the collection and environment files. Once imported, you'll need to customize the environment settings which will supply the variables used by the collection's methods.
+
+For more on Postman environments and variables, please see the [Postman Online Documentation](https://www.getpostman.com/docs/postman/environments_and_globals/manage_environments).
 
 # Setting up the Buttons
 _**TODO:** provide details of this_
