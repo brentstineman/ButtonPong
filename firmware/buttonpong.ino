@@ -1,5 +1,6 @@
+// This #include statement was automatically added by the Particle IDE.
+#include <InternetButtonEvents.h>
 #include <InternetButton.h>
-#include "InternetButtonEvents.h"
 
 #define INTERNET_BUTTON_TYPE 0
 
@@ -11,8 +12,8 @@ InternetButtonEvents buttonEvents = InternetButtonEvents(b);
 //// TODO
 // Implement state change button X
 // Factor state change button into seperate class lib X
-// implement all 4 buttons
-// publish to particle libraries
+// implement all 4 buttons X
+// publish to particle libraries X
 // particle function ping(time ms) 
 
 // call pong(true/false) 
@@ -26,7 +27,6 @@ void setup() {
     buttonEvents.onButtonOn(buttonOnHandler);
     buttonEvents.onButtonClicked(buttonClickedHandler);
     buttonEvents.onAllButtonsClicked(allButtonsClickedHandler);
-
 
     b.begin(INTERNET_BUTTON_TYPE);
     
@@ -51,13 +51,14 @@ void allButtonsClickedHandler() {
     b.allLedsOn(20,0,0);
     
     Particle.publish("register", "TRUE");
-    Serial.print("all click");
+    Serial.println("all click");
     delay(500);
 }
 
 void buttonClickedHandler(int buttonNumber) {
     b.allLedsOn(20,20,0);
     
+    //TBD
     //Particle.publish("ping", "TRUE");
     Serial.print("click: ");
     Serial.println(buttonNumber);
