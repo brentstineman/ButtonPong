@@ -23,8 +23,10 @@ void setup() {
     Particle.function("ping", ping);
     Particle.subscribe("hook-response/pong", registrationHandler);
     
+    buttonEvents.onButtonOn(buttonOnHandler);
+    buttonEvents.onButtonClicked(buttonClickedHandler);
     buttonEvents.onAllButtonsClicked(allButtonsClickedHandler);
-    buttonEvents.onAllButtonsOn(allButtonsOnHandler);
+
 
     b.begin(INTERNET_BUTTON_TYPE);
     
@@ -40,15 +42,25 @@ void loop(){
     }
 }
 
-void allButtonsOnHandler() {
-    Serial.println("down");
+void buttonOnHandler(int buttonNumber) {
+    Serial.print("down: ");
+    Serial.println(buttonNumber);
 }
 
 void allButtonsClickedHandler() {
-    b.allLedsOn(20,20,0);
+    b.allLedsOn(20,0,0);
     
     Particle.publish("register", "TRUE");
-    Serial.println("register");
+    Serial.print("all click");
+    delay(500);
+}
+
+void buttonClickedHandler(int buttonNumber) {
+    b.allLedsOn(20,20,0);
+    
+    //Particle.publish("ping", "TRUE");
+    Serial.print("click: ");
+    Serial.println(buttonNumber);
     delay(500);
 }
 
