@@ -3,32 +3,34 @@
 #include <InternetButton.h>
 
 int gameState = 0; // 0 - gameover, 1 - waiting, 2 - responding
+unsigned long respondingTimeout;
 
-// if you have the original SparkButton, which does not have a buzzer or 
-// a plastic enclosure to use, just add a '1' between the parentheses in 
-// following line of code.
 InternetButton b = InternetButton();
-
 InternetButtonEvents buttonEvents = InternetButtonEvents(b);
 
 void setup() {
     Serial.begin(9600);
-    Particle.function("ping", ping);
     
-    Particle.subscribe("hook-response/pong", registrationHandler);
+    Particle.function("ping", ping);
+    Particle.subscribe("hook-sent/register", registrationHandler, MY_DEVICES);
+    
     buttonEvents.onButtonClicked(buttonClickedHandler);
     buttonEvents.onAllButtonsClicked(allButtonsClickedHandler);
 
-    b.begin(INTERNET_BUTTON_TYPE);
-    
+    // If you have an original SparkButton, make sure to use `b.begin(1)` 
+    b.begin();
 }
 
 void loop(){
     buttonEvents.update();
+    updateGameLeds();
     
-    if (gameState == 0 && buttonEvents.allButtonsOn()) {
+}
+
+void updateGameLeds() {
+      if (gameState == 0 && buttonEvents.allButtonsOn()) {
         b.allLedsOn(0,20,20);
-    } else if (gameState == 1) {
+    } else if (gameState == 2) {
         if (buttonEvents.buttonOn(1)) {
             b.ledOn(1,0,20,0);
             b.ledOn(11,0,20,0);
@@ -76,29 +78,56 @@ void loop(){
 void allButtonsClickedHandler() {
     
     if (gameState == 0) {
+        Serial.println("Registering for new game");
         Particle.publish("register");
     }
 
 }
 
-void buttonClickedHandler(int buttonNumber) {
-    if (gameState == 2) {
-        Particle.publish("pong", "TRUE");
-    }
-}
-
 void registrationHandler(const char *event, const char *data) {
+    Serial.println("Registration succeeded");
+
     gameState = 1;
     b.allLedsOn(0,20,0);
     delay(500);
 }
 
-int ping(String countdown) {
-    b.rainbow(5);
+int ping(String timeout) {
+    Serial.println("Received move: " + timeout + " seconds");
     
     if (gameState == 1) {
+        int timeoutVal = 5;
+        if (timeout != NULL) {
+            timeoutVal = timeout.toInt();
+        }
+        
+        b.rainbow(3);
+        respondingTimeout = millis() + timeoutVal*1000;
+        
         gameState = 2;
     }
     
     return 1;
+}
+
+void buttonClickedHandler(int buttonNumber) {
+    if (gameState == 2) {
+        Serial.println("Playing a move");
+
+        if (millis() < respondingTimeout) {
+            Serial.println("Successful move");
+            Particle.publish("pong", "TRUE");
+            gameState = 1;
+            b.allLedsOn(0,20,0);
+        } else {
+            // Game over
+            Serial.println("Game over");
+            Particle.publish("pong", "FALSE");           
+            gameState = 0;
+            b.allLedsOn(20,0,0);
+        }
+        
+        respondingTimeout = 0;
+        delay(500);
+    }
 }
