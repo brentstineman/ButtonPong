@@ -2,6 +2,7 @@
 #include <InternetButtonEvents.h>
 #include <InternetButton.h>
 
+// if you're using a prototype of the button, use '0', otherwise set it to '1'
 #define INTERNET_BUTTON_TYPE 0
 
 int gameState = 0; // 0 - gameover, 1 - waiting, 2 - responding

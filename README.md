@@ -56,8 +56,55 @@ To use these files, simply [install Postman](https://www.getpostman.com/) and im
 
 For more on Postman environments and variables, please see the [Postman Online Documentation](https://www.getpostman.com/docs/postman/environments_and_globals/manage_environments).
 
-# Setting up the Buttons
-_**TODO:** provide details of this_
+# Setting up the Particle Button
+
+The Particle Internet Button was choosen for this project for several reasons:
+1. as previously mentioned, no wiring is required. The button is a self contained prototyping platform
+2. Particle provides an online IDE for publishing to the devices with a comprehensive sample library
+3. it has built in wi-fi so its just "connect and go"
+
+## Registering your device
+We start by registering our button and setting up the Wifi. The Button's brain is a Particle Photon, so we'll follow the [setup instructions provided by Particle](https://docs.particle.io/guide/tools-and-features/button/core/). This can be done via the Apple or Android apps, USB, or [from your computer](https://setup.particle.io/). The Photon is a 'headless' device, so if your wifi requires you to log in via a web page, you'll need to talk with your wifi administrators about how to register your device's MAC address. For details on obtaining the device's MAC address, please refer to this [blog post](https://blog.jongallant.com/2015/08/particle-photon-mac-address/). 
+
+_**Note:** When at a hack with lots of Photon's around be sure you're connecting to **your** device. The Wifi SSID will be in the format of "Photon-nnnn". The 'nnnn' are from the 3 section of the devices serial number. The number should be visible on a sticker placed somewhere on your device's packaging._
+
+During this process you will be prompted to create a Particle Account and to name your device. Be sure to name the device something unique but meaningful so you can tell your device apart from others. 
+
+## Setting up the firmware
+Particle provides an online, web based IDE that we can use to author and publish firmware to our device. So with the device set up, proceed to [https://build.particle.io] to start adding the Button Pong firmware.
+
+We start by creating an App, the project that will contain the firmware code we're goign to flash to our device. Start by naming the App then press "save" (click on the Folder icon on the upper left of the IDE). Don't forget to press "save". 
+
+Next we add some community libraries that are used by our sample firmware: InternetButton, InternetButtonEvents. We'll add these by selecting "Libraries" in the IDE (looks like a medal in the left hand menu). Search for the two libraries one at a time and after selecting them, click on "Include in project". If our App isn't listed, as a project we can include these in, then we didn't press "save". So return code area and create our app again and be sure to save it this time. 
+
+With the libraries added, we need need to paste in the baseline copy of the firmware. Copy the contents of the buttonpong.ino file from this repository into the .ino file for your App/project. A default one was created for you when you created the project. You want to replace everything in that file with the contents from buttonpong.ino file. 
+
+With the fireware, and libraries in place, press the lightning bolt icon in the IDE to flash the firmware to your device. 
+
+_**Note:** In the lower right corner of the IDE, you should see the name of your device listed with a slowly flashing blue icon, the "breathing" state of your Photon. If your device is not listed, click on the name that is to select your device (you may have multiple devices selected). If no devices are listed, then proceed back to the setup steps for the device and make sure its associated with your particle user account._
+
+## Connecting the Device to the API
+Particlel provides a cloud back end to interact with devices. Button Leverages this to help the device call and be called by the API. The first step is to set up the web hooks for allow the device to call the API.
+
+Before we start, we need to capture some information. From the Azure infrastructure:
+- the root URL of the App Service that our API is hosted in... \<myname\>.azurewebsites.net
+- the master host key for our function API (available from the Function app settings)
+
+From the Particle Developer ID:
+- the device ID (select Devices, then your device to display the numeric device Id)
+- your account Access Token (click on Settings) to see your alphanumeric access token
+
+With this information in hand, we can proceed to the Particle Console IDE, [https://console.particle.io] and define our integrations. On the console IDE, select Integrations from the left hand menu, then web hook, then "Custom Template". We've provided a sample template for each of the integration points we'll be creating, pong-webhook.json
+
+Paste the contents of this file into the custom template of your integration and replace the following values:
+
+\<apidns\> - use the dns name of your site
+
+\<masterhostkey\> - the master host key for our API functions
+
+\<myparticleaccesstoken\> - your particle account access token
+
+Once the values have been substituted, "Create" the web hook. You can test to make sure it was successfully created by pressing the "Test" button on the webhook page. 
 
 # Enhancement Ideas
 As has been mentioned several times, this repo stops well short of implementing many features that would make the game more reliable, less prone to exploitation, and very possibly, more fun. However, sometimes hacks are helped by providing some guidance, so the following is a list of possible enhancements or improvements your hack group could explore:

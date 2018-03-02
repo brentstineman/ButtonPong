@@ -1,16 +1,16 @@
 {
     "event": "pong",
-    "url": "https://buttonpongapi.azurewebsites.net/api/devices",
+    "url": "https://<apidns>.azurewebsites.net/api/devices",
     "requestType": "POST",
     "noDefaults": true,
     "rejectUnauthorized": true,
     "json": {
         "deviceId": "{{PARTICLE_DEVICE_ID}}",
-        "accesstoken": "davidtoken",
+        "accesstoken": "<myparticleaccesstoken>",
         "name": "{{PARTICLE_EVENT_NAME}}",
         "data": "{{PARTICLE_EVENT_VALUE}}"
     },
     "query": {
-        "code": "<PASTE AZURE FUNCTION KEY HERE>"
+        "code": "<masterhostkey>"
     }
 }
