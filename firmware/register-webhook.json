@@ -1,0 +1,16 @@
+{
+    "event": "register",
+    "url": "https://<apidns>.azurewebsites.net/api/devices",
+    "requestType": "POST",
+    "noDefaults": true,
+    "rejectUnauthorized": true,
+    "json": {
+        "deviceId": "{{PARTICLE_DEVICE_ID}}",
+        "accesstoken": "<myparticleaccesstoken>",
+        "name": "{{PARTICLE_EVENT_NAME}}",
+        "data": "{{PARTICLE_EVENT_VALUE}}"
+    },
+    "query": {
+        "code": "<masterhostkey>"
+    }
+}

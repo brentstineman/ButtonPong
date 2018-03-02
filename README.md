@@ -94,9 +94,9 @@ From the Particle Developer ID:
 - the device ID (select Devices, then your device to display the numeric device Id)
 - your account Access Token (click on Settings) to see your alphanumeric access token
 
-With this information in hand, we can proceed to the Particle Console IDE, [https://console.particle.io] and define our integrations. On the console IDE, select Integrations from the left hand menu, then web hook, then "Custom Template". We've provided a sample template for each of the integration points we'll be creating, pong-webhook.json
+With this information in hand, we can proceed to the Particle Console IDE, [https://console.particle.io] and define our integrations. On the console IDE, select Integrations from the left hand menu, then web hook, then "Custom Template". 
 
-Paste the contents of this file into the custom template of your integration and replace the following values:
+Using the register-webhook.json file provided in this repository, replace the contents of teh webhook template with the contents of the file and replace the following values:
 
 \<apidns\> - use the dns name of your site
 
@@ -105,6 +105,10 @@ Paste the contents of this file into the custom template of your integration and
 \<myparticleaccesstoken\> - your particle account access token
 
 Once the values have been substituted, "Create" the web hook. You can test to make sure it was successfully created by pressing the "Test" button on the webhook page. 
+
+Repeat this process for the pong-webhook.json file. 
+
+_**Note:** Testing the webhook from the Particle Console IDE may result in a "Timed out" response. If this happens, refresh the page and look at the log to ensure that it did indeed fail and if so, why._
 
 # Enhancement Ideas
 As has been mentioned several times, this repo stops well short of implementing many features that would make the game more reliable, less prone to exploitation, and very possibly, more fun. However, sometimes hacks are helped by providing some guidance, so the following is a list of possible enhancements or improvements your hack group could explore:
