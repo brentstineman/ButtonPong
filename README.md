@@ -84,7 +84,7 @@ With the fireware, and libraries in place, press the lightning bolt icon in the 
 _**Note:** In the lower right corner of the IDE, you should see the name of your device listed with a slowly flashing blue icon, the "breathing" state of your Photon. If your device is not listed, click on the name that is to select your device (you may have multiple devices selected). If no devices are listed, then proceed back to the setup steps for the device and make sure its associated with your particle user account._
 
 ## Connecting the Device to the API
-Particlel provides a cloud back end to interact with devices. Button Leverages this to help the device call and be called by the API. The first step is to set up the web hooks for allow the device to call the API.
+Particlel provides a cloud back end to interact with devices. Button Leverages this to help the device call and be called by the API. The device publishes an event, and the cloud back end uses an integration webhook to perform an action. So to connect the API, we need to set up the integrations to call our Azure Function API. 
 
 Before we start, we need to capture some information. From the Azure infrastructure:
 - the root URL of the App Service that our API is hosted in... \<myname\>.azurewebsites.net
@@ -106,9 +106,11 @@ Using the register-webhook.json file provided in this repository, replace the co
 
 Once the values have been substituted, "Create" the web hook. You can test to make sure it was successfully created by pressing the "Test" button on the webhook page. 
 
-Repeat this process for the pong-webhook.json file. 
+Repeat this process for the pong-webhook.json file. They will apply to all devices on your account, so there's no need to set up multiple web hooks for each device if you're sharing accounts with someone else. 
 
 _**Note:** Testing the webhook from the Particle Console IDE may result in a "Timed out" response. If this happens, refresh the page and look at the log to ensure that it did indeed fail and if so, why._
+
+Our Azure Function API has the ability to call any functions published by the device directly. So the "ping" from the API will go directly to the device using its Device ID and your account's Access Token. Therefore, there's no reason for us to set up a web hook for this integration point. 
 
 # Enhancement Ideas
 As has been mentioned several times, this repo stops well short of implementing many features that would make the game more reliable, less prone to exploitation, and very possibly, more fun. However, sometimes hacks are helped by providing some guidance, so the following is a list of possible enhancements or improvements your hack group could explore:
