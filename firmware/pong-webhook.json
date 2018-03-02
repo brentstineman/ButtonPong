@@ -1,5 +1,5 @@
 {
-    "event": "pong",
+    "event": "register",
     "url": "https://<apidns>.azurewebsites.net/api/devices",
     "requestType": "POST",
     "noDefaults": true,

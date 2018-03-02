@@ -78,6 +78,11 @@ namespace CloudAPI
                 //  "name property doesn't exist in request body
                 rtnResponse = req.CreateResponse(HttpStatusCode.BadRequest, @"Please pass the device ID and Access Token in the body of your request: { ""deviceID"" : ""value"", ""accesstoken"" : ""value""}");
             }
+            catch (Exception ex)
+            {
+                //  "name property doesn't exist in request body
+                rtnResponse = req.CreateResponse(HttpStatusCode.InternalServerError, $"An unhandled exception occured: {ex.Message}");
+            }
 
             return rtnResponse;
         }

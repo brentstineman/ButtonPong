@@ -2,12 +2,13 @@
 #include <InternetButtonEvents.h>
 #include <InternetButton.h>
 
-// if you're using a prototype of the button, use '0', otherwise set it to '1'
-#define INTERNET_BUTTON_TYPE 0
-
 int gameState = 0; // 0 - gameover, 1 - waiting, 2 - responding
 
+// if you have the original SparkButton, which does not have a buzzer or 
+// a plastic enclosure to use, just add a '1' between the parentheses in 
+// following line of code.
 InternetButton b = InternetButton();
+
 InternetButtonEvents buttonEvents = InternetButtonEvents(b);
 
 void setup() {
