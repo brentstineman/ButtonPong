@@ -2,7 +2,12 @@
 #include <InternetButtonEvents.h>
 #include <InternetButton.h>
 
-int gameState = 0; // 0 - gameover, 1 - waiting, 2 - responding
+#define STATE_GAME_OVER         0
+#define STATE_GAME_WAITING      1
+#define STATE_GAME_RESPONDING   2
+
+
+int gameState = STATE_GAME_OVER;
 unsigned long respondingTimeout;
 
 InternetButton b = InternetButton();
@@ -24,13 +29,12 @@ void setup() {
 void loop(){
     buttonEvents.update();
     updateGameLeds();
-    
 }
 
 void updateGameLeds() {
-      if (gameState == 0 && buttonEvents.allButtonsOn()) {
+      if (gameState == STATE_GAME_OVER && buttonEvents.allButtonsOn()) {
         b.allLedsOn(0,20,20);
-    } else if (gameState == 2) {
+    } else if (gameState == STATE_GAME_RESPONDING) {
         if (buttonEvents.buttonOn(1)) {
             b.ledOn(1,0,20,0);
             b.ledOn(11,0,20,0);
@@ -77,7 +81,7 @@ void updateGameLeds() {
 
 void allButtonsClickedHandler() {
     
-    if (gameState == 0) {
+    if (gameState == STATE_GAME_OVER) {
         Serial.println("Registering for new game");
         Particle.publish("register");
     }
@@ -87,7 +91,7 @@ void allButtonsClickedHandler() {
 void registrationHandler(const char *event, const char *data) {
     Serial.println("Registration succeeded");
 
-    gameState = 1;
+    gameState = STATE_GAME_WAITING;
     b.allLedsOn(0,20,0);
     delay(500);
 }
@@ -95,7 +99,7 @@ void registrationHandler(const char *event, const char *data) {
 int ping(String timeout) {
     Serial.println("Received move: " + timeout + " seconds");
     
-    if (gameState == 1) {
+    if (gameState == STATE_GAME_WAITING) {
         int timeoutVal = 5;
         if (timeout != NULL) {
             timeoutVal = timeout.toInt();
@@ -104,26 +108,26 @@ int ping(String timeout) {
         b.rainbow(3);
         respondingTimeout = millis() + timeoutVal*1000;
         
-        gameState = 2;
+        gameState = STATE_GAME_RESPONDING;
     }
     
     return 1;
 }
 
 void buttonClickedHandler(int buttonNumber) {
-    if (gameState == 2) {
+    if (gameState == STATE_GAME_RESPONDING) {
         Serial.println("Playing a move");
 
         if (millis() < respondingTimeout) {
             Serial.println("Successful move");
             Particle.publish("pong", "TRUE");
-            gameState = 1;
+            gameState = STATE_GAME_WAITING;
             b.allLedsOn(0,20,0);
         } else {
             // Game over
             Serial.println("Game over");
             Particle.publish("pong", "FALSE");           
-            gameState = 0;
+            gameState = STATE_GAME_OVER;
             b.allLedsOn(20,0,0);
         }
         
