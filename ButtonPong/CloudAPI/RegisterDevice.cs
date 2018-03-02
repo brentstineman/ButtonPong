@@ -63,7 +63,6 @@ namespace CloudAPI
                     }
                 }
 
-
                 // add device to the list
                 devicelist.Add(deviceData);
 

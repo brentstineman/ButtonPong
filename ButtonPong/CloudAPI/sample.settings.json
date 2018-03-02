@@ -1,0 +1,9 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "<connectionstring>",
+    "AzureWebJobsDashboard": "<connectionstring>",
+    "storageConnString": "<connectionstring>",
+    "storageContainer": "gamedata"
+  }
+}
