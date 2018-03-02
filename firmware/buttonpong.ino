@@ -104,17 +104,26 @@ int ping(String timeout) {
             timeoutVal = timeout.toInt();
         }
         
-        b.rainbow(3);
-        respondingTimeout = millis() + timeoutVal;
+        if (timeoutVal == -1) {
+            // YOU WON!
+            
+            b.rainbow(10);
+            gameState == STATE_GAME_OVER;
+        } else {
+            b.rainbow(3);
+            respondingTimeout = millis() + timeoutVal;
+            gameState = STATE_GAME_RESPONDING;
+        }
         
-        gameState = STATE_GAME_RESPONDING;
+      
     }
     
     return 1;
 }
 
 void buttonClickedHandler(int buttonNumber) {
-    if (gameState == STATE_GAME_RESPONDING) {
+    if (gameState == STATE_GAME_WAITING) {
+    } else if (gameState == STATE_GAME_RESPONDING) {
         Serial.println("Playing a move");
 
         if (millis() < respondingTimeout) {
