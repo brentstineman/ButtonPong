@@ -1,0 +1,88 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Button Pong",
+		"_postman_id": "72b1daf9-35ba-c8ab-3cd2-49f40e0c3a36",
+		"description": "A collection for testing the Button Pong API. Please refer to usage instructions online at: https://github.com/brentstineman/ButtonPong",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Test Pong",
+			"request": {
+				"url": {
+					"raw": "{{hosturl}}//api/pong?code={{DefaultHostKeyKey}}",
+					"host": [
+						"{{hosturl}}"
+					],
+					"path": [
+						"",
+						"api",
+						"pong"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{DefaultHostKeyKey}}",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"deviceId\" : \"mydevice\",\n  \"status\" : false\n}"
+				},
+				"description": "Send a \"ping\" response or \"pong\" message to the Button Pong API. "
+			},
+			"response": []
+		},
+		{
+			"name": "Register Device",
+			"request": {
+				"url": {
+					"raw": "{{hosturl}}/api/devices?code={{DefaultHostKeyKey}}",
+					"host": [
+						"{{hosturl}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{DefaultHostKeyKey}}",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"deviceId\" : \"mydevice4\",\n  \"accesstoken\" : \"mytoken\"\n}"
+				},
+				"description": "Register a device with the Button Pong API"
+			},
+			"response": []
+		}
+	]
+}
