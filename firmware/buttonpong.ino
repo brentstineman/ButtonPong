@@ -7,6 +7,14 @@
 #define STATE_GAME_WAITING      2
 #define STATE_GAME_RESPONDING   3
 
+#define TONE_REGISTER           "C6,4\n"
+#define TONE_GO                 "Ab6,8,C6,4\n"
+#define TONE_START_GAME         "C6,8,C6,8,C6,8,C5,8\n"
+#define TONE_PING               "Ab6,8\n"
+#define TONE_PONG               "C6,8\n"
+#define TONE_LOST          "C6,4,B4,1\n"
+#define TONE_WINNER             "Eb6,8,Eb6,8,Eb6,8,G7,2\n" 
+
 int gameState = STATE_GAME_OVER;
 unsigned long respondingTimeout;
 
@@ -21,9 +29,11 @@ void setup() {
     
     buttonEvents.onButtonClicked(buttonClickedHandler);
     buttonEvents.onAllButtonsClicked(allButtonsClickedHandler);
+    
 
     // If you have an original SparkButton, make sure to use `b.begin(1)` 
     b.begin();
+    b.setBPM(240);
 }
 
 void loop(){
@@ -53,6 +63,7 @@ void updateCoundown() {
         Particle.publish("pong", "FALSE");           
 
         b.allLedsOn(20,0,0);
+        b.playSong(TONE_LOST);
         delay(2000);
         gameState = STATE_GAME_OVER;
         
@@ -64,6 +75,7 @@ void updateCoundown() {
         }
         
     }
+
 }
 
 void updateButtonPressLeds() {
@@ -107,9 +119,10 @@ void updateButtonPressLeds() {
 }
 
 void allButtonsClickedHandler() {
-    
+
     if (gameState == STATE_GAME_OVER) {
         Serial.println("Registering for new game");
+        b.playSong(TONE_REGISTER);
         Particle.publish("register");
         gameState = STATE_GAME_READY;
     }
@@ -126,6 +139,7 @@ int startGame(String args) {
         val = 1;
         
         b.allLedsOn(0,20,0);
+        b.playSong(TONE_START_GAME);
         delay(2000);
     }
     
@@ -146,10 +160,12 @@ int ping(String timeout) {
         
         if (timeoutVal == -1) {
             // YOU WON!
-            
+            gameState = STATE_GAME_OVER;
+
+            b.playSong(TONE_WINNER);
             b.rainbow(10);
-            gameState == STATE_GAME_OVER;
         } else {
+            b.playSong(TONE_PING);
             b.rainbow(3);
             respondingTimeout = millis() + timeoutVal;
             gameState = STATE_GAME_RESPONDING;
@@ -164,11 +180,12 @@ void buttonClickedHandler(int buttonNumber) {
 
     if (gameState == STATE_GAME_READY) {
         Serial.println("Kicking off a game");
-
+        b.playSong(TONE_GO);
         Particle.publish("go");
     } else if (gameState == STATE_GAME_RESPONDING) {
 
         Serial.println("Successful move");
+        b.playSong(TONE_PONG);
         Particle.publish("pong", "TRUE");
         gameState = STATE_GAME_WAITING;
         b.allLedsOn(0,20,0);
