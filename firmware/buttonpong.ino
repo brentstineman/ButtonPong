@@ -142,7 +142,7 @@ void buttonClickedHandler(int buttonNumber) {
     if (gameState == STATE_GAME_READY) {
         Serial.println("Kicking off a game");
 
-        Particle.publish("Go");
+        Particle.publish("go");
     } else if (gameState == STATE_GAME_RESPONDING) {
 
         if (millis() < respondingTimeout) {
