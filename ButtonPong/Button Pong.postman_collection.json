@@ -8,7 +8,7 @@
 	},
 	"item": [
 		{
-			"name": "Test Pong",
+			"name": "Ping (ping response)",
 			"request": {
 				"url": {
 					"raw": "{{hosturl}}//api/pong?code={{DefaultHostKeyKey}}",
@@ -81,6 +81,82 @@
 					"raw": "{\n  \"deviceId\" : \"mydevice4\",\n  \"accesstoken\" : \"mytoken\"\n}"
 				},
 				"description": "Register a device with the Button Pong API"
+			},
+			"response": []
+		},
+		{
+			"name": "Start Game",
+			"request": {
+				"url": {
+					"raw": "{{hosturl}}/api/game?code={{DefaultHostKeyKey}}",
+					"host": [
+						"{{hosturl}}"
+					],
+					"path": [
+						"api",
+						"game"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{DefaultHostKeyKey}}",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "Starts the game"
+			},
+			"response": []
+		},
+		{
+			"name": "Reset Game",
+			"request": {
+				"url": {
+					"raw": "{{hosturl}}/api/game?code={{DefaultHostKeyKey}}",
+					"host": [
+						"{{hosturl}}"
+					],
+					"path": [
+						"api",
+						"game"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{DefaultHostKeyKey}}",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "Resets the Game"
 			},
 			"response": []
 		}
