@@ -1,19 +1,37 @@
-
-using System.IO;
-using Microsoft.AspNetCore.Mvc;
+/*
+# Access granted under MIT Open Source License: https://en.wikipedia.org/wiki/MIT_License
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+# documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
+# the rights to use, copy, modify, merge, publish, distribute, sublicense, # and/or sell copies of the Software, 
+# and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all copies or substantial portions 
+# of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
+# TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
+# CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+# DEALINGS IN THE SOFTWARE.
+#
+# Created by: Brent Stineman
+#
+# Description: This is an HTTP triggered Azure function to a "ping response" or pong event from a device
+#    For more info see: https://github.com/brentstineman/ButtonPong 
+#
+#
+# Modifications
+# 2018/03/03 : Initial publication
+#
+*/
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs.Host;
-using Newtonsoft.Json;
 using System.Net.Http;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.CSharp.RuntimeBinder;
 using System.Net;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Text;
 using System;
 
 namespace CloudAPI
@@ -24,22 +42,14 @@ namespace CloudAPI
         public bool success { get; set; }
     }
 
-    public class bpPing
-    {
-        public int responseTimeout { get; set; } // in milliseconds, if -1 sent, then you are last player. Congratulations
-    }
-
-
     public static class Pong
     {
         static Random rnd = new Random();
 
-        [FunctionName("PongDevice")]
+        [FunctionName("Pong")]
         public async static Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Function, "put", Route = "pong")]HttpRequestMessage req, TraceWriter log)
         {
-            List<bpDevice> devicelist = null;
-
-            log.Info("Pong recieved from a device.");
+            log.Info("Pong recieved from device.");
 
             HttpResponseMessage rtnResponse = null;
 
@@ -47,53 +57,19 @@ namespace CloudAPI
             {
                 // Get request body, should contain deviceId and accessToken
                 bpPong pongData = await req.Content.ReadAsAsync<bpPong>();
+                log.Info($"Pong recieved from device {pongData.deviceId}.");
 
-                //// get device list from blob
-                CloudStorageAccount storageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("storageConnString"));
-                CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-                CloudBlobContainer container = blobClient.GetContainerReference(Environment.GetEnvironmentVariable("storageContainer"));
-
-                MemoryStream tmpStream = new MemoryStream();
-                CloudBlockBlob blob = container.GetBlockBlobReference("devices");
-                try
+                GameStateManager gameState = new GameStateManager(); // get game state
+                if (gameState.IsRunning) // if game isn't running
                 {
-                    blob.DownloadToStreamAsync(tmpStream).Wait();
-                    devicelist = JsonConvert.DeserializeObject<List<bpDevice>>(Encoding.UTF8.GetString(tmpStream.ToArray()));
+                    if (pongData.success == false) // last device failed to respond in time, remove it
+                        gameState.RemoveDevice(pongData.deviceId);
+
+                    // select next device to ping and prepare response (-1 if this is the last device, aka the winner)
+                    bpDevice randomDevice = gameState.GetRandomDevice();
+                    log.Info($"Sending initial ping to device {randomDevice.deviceId}.");
+                    SendToDevice.Ping(randomDevice, (gameState.DeviceCount > 1 ? 2000 : -1));
                 }
-                catch (Exception ex)
-                {
-                    // if the container doesn't already exist, create it and an empty device collection
-                    if (ex.InnerException is StorageException && ex.InnerException.Message.Contains("does not exist"))
-                        rtnResponse = req.CreateResponse(HttpStatusCode.BadRequest, "no devices are currently registerd");                    
-                }
-
-                if (pongData.success == false) // last device failed to respond in time, remove it
-                {
-                    // add device to the list
-                    var itemToRemove = devicelist.Find(r => r.deviceId == pongData.deviceId);
-                    devicelist.Remove(itemToRemove);
-
-                    // save back to blob
-                    MemoryStream tmpStream2 = new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(devicelist, Formatting.Indented)));
-                    blob.UploadFromStreamAsync(tmpStream2).Wait();
-                }
-
-                // select next device to ping and prepare response (-1 if this is the last device, aka the winner)
-                bpDevice deviceToPing = devicelist[rnd.Next(devicelist.Count)];
-                bpPing pingValue = new bpPing()
-                {
-                    responseTimeout = (devicelist.Count > 1 ? 2000 : -1)
-                };
-                // send operation
-                WebRequest request = WebRequest.Create($"https://api.particle.io/v1/devices/{deviceToPing.deviceId}/ping?access_token={deviceToPing.accessToken}");
-                request.Method = "POST";
-                request.ContentType = "application/x-www-form-urlencoded";
-                Stream dataStream = request.GetRequestStream();
-                byte[] requestbody = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(pingValue));
-                dataStream.Write(requestbody, 0, requestbody.Length);
-                dataStream.Close();
-                WebResponse response = request.GetResponse();
-                response.Close();
 
                 // respond to request
                 rtnResponse = req.CreateResponse(HttpStatusCode.OK);
@@ -106,5 +82,6 @@ namespace CloudAPI
 
             return rtnResponse;
         }
+
     }
 }

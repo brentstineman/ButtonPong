@@ -45,7 +45,11 @@ The API consists of two functions, each implementing one method.
 
 **RegisterDevice** - This method allows a device to POST and register itself for the game. It recieves a JSON payload that contains the device ID and its access token and stores this information as an Azure blob. This is exposed along the route '/api/devices'.
 
-**PongDevice** - This method allows a device to PUT a "pong" payload to the API that can either start a game or register the status of a previous "ping" and remove the device is it was not successful.
+**PongDevice** - This method allows a device to PUT a "pong" payload to the API that can either start a game or register the status of a previous "ping" and remove the device is it was not successful. This is exposed along the route 'api/pong'.
+
+**StartGame** - This method starts the game by sending a "ping" to every device with a value of '0' (zero) to notify them to start listening for game signals. It can only be called when a game is not currently running. This is exposed as a PUT method along the route '/api/game'.
+
+**RestGame** - This method clear the game state and all registered devices. Its intended to be use mainly to assist in debugging. This is exposed as a DELETE method along the route 'api/game'.
 
 This API has intentially been kept minimal to allow for plenty of opportunties for extension and enhancement. 
 
@@ -116,12 +120,11 @@ Our Azure Function API has the ability to call any functions published by the de
 As has been mentioned several times, this repo stops well short of implementing many features that would make the game more reliable, less prone to exploitation, and very possibly, more fun. However, sometimes hacks are helped by providing some guidance, so the following is a list of possible enhancements or improvements your hack group could explore:
 
 #### API Improvements
-- once a game is in progress, prevent more devices from registering
-- don't allow a device to register twice (as this would give it 'extra lives')
 - once a game is in progress, prevent any device from sending an "start game" pong
 - add additional error handling to the API to deal with situations like "device not active"
 - add a dashboard/scoring feature
 - help preventing "cheating" by adding in code that double checks the devices success/fail status
+- prevent "state clobbering" by adding locking to the state data store
 
 #### Gameplay Enhancements
 - Add gameplay complexity

@@ -8,15 +8,14 @@
 	},
 	"item": [
 		{
-			"name": "Ping (ping response)",
+			"name": "Pong (ping response)",
 			"request": {
 				"url": {
-					"raw": "{{hosturl}}//api/pong?code={{DefaultHostKeyKey}}",
+					"raw": "{{hosturl}}/api/pong?code={{DefaultHostKeyKey}}",
 					"host": [
 						"{{hosturl}}"
 					],
 					"path": [
-						"",
 						"api",
 						"pong"
 					],
@@ -78,7 +77,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"deviceId\" : \"mydevice4\",\n  \"accesstoken\" : \"mytoken\"\n}"
+					"raw": "{\r\n    \"deviceId\": \"mydeviceid\",\r\n    \"accessToken\": \"myaccesstoken\"\r\n}"
 				},
 				"description": "Register a device with the Button Pong API"
 			},
