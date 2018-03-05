@@ -1,12 +1,12 @@
 {
-    "event": "register",
+    "event": "pong",
     "url": "https://<apidns>.azurewebsites.net/api/pong",
     "requestType": "PUT",
     "noDefaults": true,
     "rejectUnauthorized": true,
     "json": {
         "deviceId": "{{PARTICLE_DEVICE_ID}}",
-        "status": "{{PARTICLE_EVENT_VALUE}}"
+        "success": "{{PARTICLE_EVENT_VALUE}}"
     },
     "query": {
         "code": "<masterhostkey>"

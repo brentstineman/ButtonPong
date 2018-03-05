@@ -121,6 +121,7 @@ namespace CloudAPI
         {
             MemoryStream tmpStream2 = new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(devicelist, Formatting.Indented)));
             stateBlob.UploadFromStreamAsync(tmpStream2).Wait();
+            tmpStream2.Close();
         }
 
         /// <summary>
@@ -154,7 +155,7 @@ namespace CloudAPI
         {
             bool resultValue = false;
 
-            var itemToRemove = devicelist.Find(r => r.deviceId == deviceId);
+            var itemToRemove = devicelist.Find(r => r.deviceId.Equals(deviceId));
             if (itemToRemove != null)
             {
                 devicelist.Remove(itemToRemove);
@@ -234,7 +235,10 @@ namespace CloudAPI
         public bpDevice GetRandomDevice()
         {
             if (mydevices.Count > 1)
-                return mydevices[new Random((int)DateTime.Now.Ticks).Next(1, devicelist.Count - 1)];
+            {
+                int randomInt = new Random((int)DateTime.Now.Ticks).Next(1, devicelist.Count);
+                return mydevices[randomInt];
+            }
             else
                 return null;
         }

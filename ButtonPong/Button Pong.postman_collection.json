@@ -8,10 +8,10 @@
 	},
 	"item": [
 		{
-			"name": "Pong (ping response)",
+			"name": "API - Pong (ping response)",
 			"request": {
 				"url": {
-					"raw": "{{hosturl}}/api/pong?code={{DefaultHostKeyKey}}",
+					"raw": "{{hosturl}}/api/pong?code={{DefaultHostKey}}",
 					"host": [
 						"{{hosturl}}"
 					],
@@ -22,7 +22,7 @@
 					"query": [
 						{
 							"key": "code",
-							"value": "{{DefaultHostKeyKey}}",
+							"value": "{{DefaultHostKey}}",
 							"equals": true,
 							"description": ""
 						}
@@ -46,10 +46,10 @@
 			"response": []
 		},
 		{
-			"name": "Register Device",
+			"name": "API - Register Device",
 			"request": {
 				"url": {
-					"raw": "{{hosturl}}/api/devices?code={{DefaultHostKeyKey}}",
+					"raw": "{{hosturl}}/api/devices?code={{DefaultHostKey}}",
 					"host": [
 						"{{hosturl}}"
 					],
@@ -60,7 +60,7 @@
 					"query": [
 						{
 							"key": "code",
-							"value": "{{DefaultHostKeyKey}}",
+							"value": "{{DefaultHostKey}}",
 							"equals": true,
 							"description": ""
 						}
@@ -84,7 +84,7 @@
 			"response": []
 		},
 		{
-			"name": "Start Game",
+			"name": "API - Start Game",
 			"request": {
 				"url": {
 					"raw": "{{hosturl}}/api/game?code={{DefaultHostKeyKey}}",
@@ -122,7 +122,7 @@
 			"response": []
 		},
 		{
-			"name": "Reset Game",
+			"name": "API - Reset Game",
 			"request": {
 				"url": {
 					"raw": "{{hosturl}}/api/game?code={{DefaultHostKeyKey}}",
@@ -156,6 +156,92 @@
 					"raw": ""
 				},
 				"description": "Resets the Game"
+			},
+			"response": []
+		},
+		{
+			"name": "device - Start Signal",
+			"request": {
+				"url": {
+					"raw": "https://api.particle.io/v1/devices/{{deviceid}}/startGame?access_token={{ParticleAccessKey}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"particle",
+						"io"
+					],
+					"path": [
+						"v1",
+						"devices",
+						"{{deviceid}}",
+						"startGame"
+					],
+					"query": [
+						{
+							"key": "access_token",
+							"value": "{{ParticleAccessKey}}",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "Sends a \"game start\" signal to the device"
+			},
+			"response": []
+		},
+		{
+			"name": "device - Ping Signal",
+			"request": {
+				"url": {
+					"raw": "https://api.particle.io/v1/devices/{{deviceid}}/ping?access_token={{ParticleAccessKey}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"particle",
+						"io"
+					],
+					"path": [
+						"v1",
+						"devices",
+						"{{deviceid}}",
+						"ping"
+					],
+					"query": [
+						{
+							"key": "access_token",
+							"value": "{{ParticleAccessKey}}",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "Sends a \"ping\" signal to the device to tell the player its time to press a button"
 			},
 			"response": []
 		}

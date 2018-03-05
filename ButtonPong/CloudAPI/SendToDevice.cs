@@ -29,23 +29,11 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CloudAPI
 {
-    /// <summary>
-    /// "Ping" payload
-    /// </summary>
-    public class bpPing
-    {
-        /// <summary>
-        /// in milliseconds, if -1 sent, then you are last player. Congratulations
-        /// If 0, that means the game is ready to start
-        /// any value > 0 is the time the device has to get a button push
-        /// </summary>
-        public int responseTimeout { get; set; } 
-    }
-
-    /// <summary>
+       /// <summary>
     /// sends events to Photon devices
     /// </summary>
     class SendToDevice
@@ -57,12 +45,7 @@ namespace CloudAPI
         /// <param name="value">the timeout value</param>
         public static void Ping(bpDevice deviceToPing, int value)
         {
-            bpPing pingValue = new bpPing()
-            {
-                responseTimeout = value
-            };
-
-            Send(deviceToPing, "ping", JsonConvert.SerializeObject(pingValue));
+            Send(deviceToPing, "ping", JsonConvert.SerializeObject(value.ToString()));
         }
 
         /// <summary>
@@ -84,8 +67,9 @@ namespace CloudAPI
             byte[] requestbody = Encoding.UTF8.GetBytes(requestBody);
             dataStream.Write(requestbody, 0, requestbody.Length);
             dataStream.Close();
-            WebResponse response = await request.GetResponseAsync();
-            response.Close();
+            Task<WebResponse> response = request.GetResponseAsync();
+            response.Wait();
+            response.Result.Close();
         }
     }
 }
