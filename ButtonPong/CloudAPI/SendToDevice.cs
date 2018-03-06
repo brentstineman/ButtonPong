@@ -45,7 +45,7 @@ namespace CloudAPI
         /// <param name="value">the timeout value</param>
         public static void Ping(bpDevice deviceToPing, int value)
         {
-            Send(deviceToPing, "ping", JsonConvert.SerializeObject(value.ToString()));
+            Send(deviceToPing, "ping", value.ToString());
         }
 
         /// <summary>
@@ -64,12 +64,11 @@ namespace CloudAPI
             request.Method = "POST";
             request.ContentType = "application/x-www-form-urlencoded";
             Stream dataStream = request.GetRequestStream();
-            byte[] requestbody = Encoding.UTF8.GetBytes(requestBody);
+            byte[] requestbody = Encoding.UTF8.GetBytes($"args={requestBody}");
             dataStream.Write(requestbody, 0, requestbody.Length);
             dataStream.Close();
-            Task<WebResponse> response = request.GetResponseAsync();
-            response.Wait();
-            response.Result.Close();
+            WebResponse response = await request.GetResponseAsync();
+            response.Close();
         }
     }
 }

@@ -72,7 +72,9 @@ We start by registering our button and setting up the Wifi. The Button's brain i
 
 _**Note:** When at a hack with lots of Photon's around be sure you're connecting to **your** device. The Wifi SSID will be in the format of "Photon-nnnn". The 'nnnn' are from the 3 section of the devices serial number. The number should be visible on a sticker placed somewhere on your device's packaging._
 
-During this process you will be prompted to create a Particle Account and to name your device. Be sure to name the device something unique but meaningful so you can tell your device apart from others. 
+During this process you will be prompted to create a Particle Account and to name your device. Be sure to name the device something unique but meaningful so you can tell your device apart from others.
+
+Your photon can store the details of up to 5 wifi networks. If you need/want to manage these, please refer to the [Particle Reference documentation](https://docs.particle.io/reference/firmware/photon/#setcredentials-).
 
 ## Setting up the firmware
 Particle provides an online, web based IDE that we can use to author and publish firmware to our device. So with the device set up, proceed to [https://build.particle.io] to start adding the Button Pong firmware.
@@ -110,21 +112,30 @@ Using the register-webhook.json file provided in this repository, replace the co
 
 Once the values have been substituted, "Create" the web hook. You can test to make sure it was successfully created by pressing the "Test" button on the webhook page. 
 
-Repeat this process for the pong-webhook.json file. They will apply to all devices on your account, so there's no need to set up multiple web hooks for each device if you're sharing accounts with someone else. 
+Repeat this process for the pong-webhook.json and stsartsignal-webhook.json files. These integration webhooks will apply to all devices on your account, so there's no need to set up multiple web hooks for each device on the same account.
 
 _**Note:** Testing the webhook from the Particle Console IDE may result in a "Timed out" response. If this happens, refresh the page and look at the log to ensure that it did indeed fail and if so, why._
 
 Our Azure Function API has the ability to call any functions published by the device directly. So the "ping" from the API will go directly to the device using its Device ID and your account's Access Token. Therefore, there's no reason for us to set up a web hook for this integration point. 
 
+Additionally, this firmware stores the "state" of the game (not running, registered, running, over). To reset this state, you will need to press the reset button of your device. While doing work with the device and API, this will be a pretty common occurance. 
+
 # Enhancement Ideas
 As has been mentioned several times, this repo stops well short of implementing many features that would make the game more reliable, less prone to exploitation, and very possibly, more fun. However, sometimes hacks are helped by providing some guidance, so the following is a list of possible enhancements or improvements your hack group could explore:
 
 #### API Improvements
-- once a game is in progress, prevent any device from sending an "start game" pong
-- add additional error handling to the API to deal with situations like "device not active"
+- once a game is in progress, prevent any device from sending an "start game" pong (this results in multiple 'balls' in play)
+- if a device tries to register while a game is ongoing, make sure it doesn't think its registered (add negative response to the API and handling to the device).
+- add additional error handling to the API to deal with situations like "device not active" when attempting to "ping" it
 - add a dashboard/scoring feature
-- help preventing "cheating" by adding in code that double checks the devices success/fail status
+- help preventing "cheating" by adding in code that double checks the devices success/fail status the last "ping"
 - prevent "state clobbering" by adding locking to the state data store
+- Add telemetry information or an app gateway to the API to allow for monitoring
+- experiment with state stores other then Azure Storage
+
+#### Device Enhancements
+- give the ability to reset the game state stored the device either via an integration webhook, or via the device itself. Perhaps integrate this with the reset-game API
+- 
 
 #### Gameplay Enhancements
 - Add gameplay complexity
