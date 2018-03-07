@@ -1,16 +1,16 @@
 {
     "event": "register",
-    "url": "https://<apidns>.azurewebsites.net/api/devices",
+    "url": "https://squire-cse-pong.azurewebsites.net/api/devices",
     "requestType": "POST",
     "noDefaults": true,
     "rejectUnauthorized": true,
     "json": {
         "deviceId": "{{PARTICLE_DEVICE_ID}}",
-        "accesstoken": "<myparticleaccesstoken>",
+        "accesstoken": "f135626d30b4e7791d049ac691ad0311db588efd",
         "name": "{{PARTICLE_EVENT_NAME}}",
         "data": "{{PARTICLE_EVENT_VALUE}}"
     },
     "query": {
-        "code": "<masterhostkey>"
+        "code": "mMdWas4NqIWWEaoNvrqnrzCBz6FTMJMFU45cGsm8mBYznuGQzCKybQ=="
     }
 }

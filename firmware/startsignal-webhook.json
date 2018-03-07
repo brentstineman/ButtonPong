@@ -2,12 +2,12 @@
     "event": "signalready",
     "responseTopic": "",
     "errorResponseTopic": "",
-    "url": "https://<apidns>.azurewebsites.net/api/game",
+    "url": "https://squire-cse-pong.azurewebsites.net/api/game",
     "requestType": "PUT",
     "noDefaults": true,
     "rejectUnauthorized": false,
     "responseTemplate": "",
     "query": {
-        "code": "<masterhostkey>"
+        "code": "mMdWas4NqIWWEaoNvrqnrzCBz6FTMJMFU45cGsm8mBYznuGQzCKybQ=="
     }
 }
