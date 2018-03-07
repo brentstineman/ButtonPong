@@ -67,7 +67,7 @@ For more on Postman environments and variables, please see the [Postman Online D
 The Particle Internet Button was choosen for this project for several reasons:
 1. as previously mentioned, no wiring is required. The button is a self contained prototyping platform
 2. Particle provides an online IDE for publishing to the devices with a comprehensive sample library
-3. it has built in wi-fi so its just "connect and go"
+3. it has built WiFi so its just "connect and go"
 
 ## Registering your device
 We start by registering our button and setting up the WiFi. The Button's brain is a Particle Photon, so we'll follow the [setup instructions provided by Particle](https://docs.particle.io/guide/tools-and-features/button/core/). This can be done via the Apple or Android apps, USB, or [from your computer](https://setup.particle.io/). The Photon is a 'headless' device, so if your WiFi requires you to log in via a web page, you'll need to talk with your WiFi administrators about how to register your device's MAC address. For details on obtaining the device's MAC address, please refer to this [blog post](https://blog.jongallant.com/2015/08/particle-photon-mac-address/). 
@@ -96,7 +96,7 @@ Particle provides a cloud back end to interact with devices. Button Leverages th
 
 Before we start, we need to capture some information. From the Azure infrastructure:
 - the root URL of the App Service that our API is hosted in... \<myname\>.azurewebsites.net
-- the master host key for our function API (available from the Function app settings)
+- the master host key for our function API.  _(This can be obtained via the Azure portal by navigating to and of the Button Pong functions and pressing `Manage` under the function name.  In the resulting pane on the right-hand side, there will be a section for `Host Keys` under which there is an item named `_master`.   Using the `Click to Show` link will expose the master key for this Functions application.)_
 
 From the Particle Developer ID:
 - the device ID (select Devices, then your device to display the numeric device Id)
@@ -112,7 +112,7 @@ Using the register-webhook.json file provided in this repository, replace the co
 
 \<apidns\> - use the dns name of your site
 
-\<masterhostkey\> - the master host key for our API functions.  This can be obtained via the Azure portal by navigating to and of the Button Pong functions and pressing `Manage` under the function name.  In the resulting pane on the right-hand side, there will be a section for `Host Keys` under which there is an item named `_master`.   Using the `Click to Show` link will expose the master key for this Functions application.
+\<masterhostkey\> - the master host key for our API functions. 
 
 \<myparticleaccesstoken\> - your particle account access token
 
@@ -121,6 +121,8 @@ Once the values have been substituted, "Create" the web hook. You can test to ma
 Repeat this process for the pong-webhook.json and stsartsignal-webhook.json files. These integration webhooks will apply to all devices on your account, so there's no need to set up multiple web hooks for each device on the same account.
 
 _**Note:** Testing the webhook from the Particle Console IDE may result in a "Timed out" response. If this happens, refresh the page and look at the log to ensure that it did indeed fail and if so, why._
+
+The [Particle Command Line](https://docs.particle.io/guide/tools-and-features/cli/photon/) can also be used to register the webhooks, using the command `particle webhook create <<FILENAME>>`, where `<<FILENAME>>` is the JSON template that was updated.
 
 Our Azure Functions API has the ability to call any functions published by the device directly. So the "ping" from the API will go directly to the device using its Device ID and your account's Access Token. Therefore, there's no reason for us to set up a web hook for this integration point. 
 
