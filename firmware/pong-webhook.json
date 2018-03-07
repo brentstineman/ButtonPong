@@ -1,6 +1,6 @@
 {
     "event": "pong",
-    "url": "https://<apidns>.azurewebsites.net/api/pong",
+    "url": "https://squire-cse-pong.azurewebsites.net/api/pong",
     "requestType": "PUT",
     "noDefaults": true,
     "rejectUnauthorized": true,
@@ -9,6 +9,6 @@
         "success": "{{PARTICLE_EVENT_VALUE}}"
     },
     "query": {
-        "code": "<masterhostkey>"
+        "code": "mMdWas4NqIWWEaoNvrqnrzCBz6FTMJMFU45cGsm8mBYznuGQzCKybQ=="
     }
 }
