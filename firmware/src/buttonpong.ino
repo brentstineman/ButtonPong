@@ -24,16 +24,11 @@ InternetButtonEvents buttonEvents = InternetButtonEvents(b);
 void setup() {
     Serial.begin(9600);
 
-    Serial.print("Registering functions...");
     Particle.function("startGame", startGame);
     Particle.function("ping", ping);
-    Serial.println(" Complete.\n");
 
-    Serial.print("Registering handlers...");
     buttonEvents.onButtonClicked(buttonClickedHandler);
     buttonEvents.onAllButtonsClicked(allButtonsClickedHandler);
-    Serial.println(" Complete.\n");
-
 
     // If you have an original SparkButton, make sure to use `b.begin(1)`
     b.begin();
@@ -55,7 +50,7 @@ void updateGameLeds() {
         updateButtonPressLeds();
         updateCoundown();
     }
-    else {        
+    else {
         b.allLedsOff();
     }
 }
