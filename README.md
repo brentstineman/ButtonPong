@@ -5,12 +5,12 @@ This game was created to provide a starting point for coding events where attend
 
 ## How it works
 
-When a Particle Internet Button when activated with the game's firmware it will register with the game API hosted in Azure Functions. When all the devices that will participate in the game have registered, one person starts the game by depressing and holding down all four switches(buttons) on the device. This sends a single to the API to begin the game by sending a "ping" to a random device connected to the game. Upon recieving the "ping" the user of that device will get 2 seconds to depress any of the switches/buttons on their device. The device then sends a "pong" back to the Azure Function api to indicate if the user successfully depressed a button or not. If the user was not successful, the button will light up red and they are removed from the game. The API then "pings" a random device registered for the game. 
+When a Particle Internet Button when activated with the game's firmware it will register with the game API hosted in Azure Functions. When all the devices that will participate in the game have registered, one person starts the game by depressing and holding down all four switches(buttons) on the device. This sends a single to the API to begin the game by sending a "ping" to a random device connected to the game. Upon receiving the "ping" the user of that device will get 2 seconds to depress any of the switches/buttons on their device. The device then sends a "pong" back to the Azure Function API to indicate if the user successfully depressed a button or not. If the user was not successful, the button will light up red and they are removed from the game. The API then "pings" a random device registered for the game. 
 
 This process continues until only one device is left at which time it is notified it is the winner and the game ends. 
 
 ## Using this for hacks and contributions
-If you intend to use this for hacks, have each team fork this repository to their own so they can work on their code there. This allows them to make their changes independently. Additionally, we (the origional authors of this repository) cannot help you secure Particle Buttons for your hack no matter how much we might like too. This is not a funded, official effort so we simply don't have anything that even ressembles a budget.
+If you intend to use this for hacks, have each team fork this repository to their own so they can work on their code there. This allows them to make their changes independently. Additionally, we (the origional authors of this repository) cannot help you secure Particle Buttons for your hack no matter how much we might like too. This is not a funded, official effort so we simply don't have anything that even resembles a budget.
 
 This repository will accept pull requests, but only for the purpose of improving the hack experience. The intention was to provide a simple game that could be extended, not to create a production ready game with lots of complexity. Please keep this in mind when submitting issues or PRs. 
 
@@ -38,12 +38,12 @@ If you did not deploy the Azure infrastructure via command line, you will need t
 
 **storageConnString** - the connection string of the storage account we created in the resource group
 
-**storageContainer** - the blob container in that storage account where we'll store game data. we recommend usign the name 'gamedata'. 
+**storageContainer** - the blob container in that storage account where we'll store game data. we recommend using the name 'gamedata'. 
 
 ## The API 
 The API consists of two functions, each implementing one method. 
 
-**RegisterDevice** - This method allows a device to POST and register itself for the game. It recieves a JSON payload that contains the device ID and its access token and stores this information as an Azure blob. This is exposed along the route '/api/devices'.
+**RegisterDevice** - This method allows a device to POST and register itself for the game. It receives a JSON payload that contains the device ID and its access token and stores this information as an Azure blob. This is exposed along the route '/api/devices'.
 
 **PongDevice** - This method allows a device to PUT a "pong" payload to the API that can either start a game or register the status of a previous "ping" and remove the device is it was not successful. This is exposed along the route 'api/pong'.
 
@@ -51,10 +51,12 @@ The API consists of two functions, each implementing one method.
 
 **RestGame** - This method clear the game state and all registered devices. Its intended to be use mainly to assist in debugging. This is exposed as a DELETE method along the route 'api/game'.
 
-This API has intentially been kept minimal to allow for plenty of opportunties for extension and enhancement. 
+This API has intentionally been kept minimal to allow for plenty of opportunities for extension and enhancement. 
 
 ## Testing the API
-To make Testing the API easier, especially when just trying to learn what its doing. We've created a Postman collection (Button Pong.postman_collection.json) and exported it to this repository. This collection uses variables that should be defined in a cooresponding Postman environment. A sample environment file, to outline what values should be provided, has also been placed in the repository ((Button PongSample-Local.postman_environment.json))
+If you're running the API locally, you'll need to rename `sample.settings.json` to `local.settings.json` and update the placeholders with the connection strings to your storage account.  If you're seeing exceptions in the local function host window, this is a likely cause.
+
+To make Testing the API easier, especially when just trying to learn what its doing, we've created a Postman collection (Button Pong.postman_collection.json) and exported it to this repository. This collection uses variables that should be defined in a corresponding Postman environment. A sample environment file, to outline what values should be provided, has also been placed in the repository ((Button PongSample-Local.postman_environment.json))
 
 To use these files, simply [install Postman](https://www.getpostman.com/) and import the collection and environment files. Once imported, you'll need to customize the environment settings which will supply the variables used by the collection's methods.
 
@@ -65,48 +67,52 @@ For more on Postman environments and variables, please see the [Postman Online D
 The Particle Internet Button was choosen for this project for several reasons:
 1. as previously mentioned, no wiring is required. The button is a self contained prototyping platform
 2. Particle provides an online IDE for publishing to the devices with a comprehensive sample library
-3. it has built in wi-fi so its just "connect and go"
+3. it has built WiFi so its just "connect and go"
 
 ## Registering your device
-We start by registering our button and setting up the Wifi. The Button's brain is a Particle Photon, so we'll follow the [setup instructions provided by Particle](https://docs.particle.io/guide/tools-and-features/button/core/). This can be done via the Apple or Android apps, USB, or [from your computer](https://setup.particle.io/). The Photon is a 'headless' device, so if your wifi requires you to log in via a web page, you'll need to talk with your wifi administrators about how to register your device's MAC address. For details on obtaining the device's MAC address, please refer to this [blog post](https://blog.jongallant.com/2015/08/particle-photon-mac-address/). 
+We start by registering our button and setting up the WiFi. The Button's brain is a Particle Photon, so we'll follow the [setup instructions provided by Particle](https://docs.particle.io/guide/tools-and-features/button/core/). This can be done via the Apple or Android apps, USB, or [from your computer](https://setup.particle.io/). The Photon is a 'headless' device, so if your WiFi requires you to log in via a web page, you'll need to talk with your WiFi administrators about how to register your device's MAC address. For details on obtaining the device's MAC address, please refer to this [blog post](https://blog.jongallant.com/2015/08/particle-photon-mac-address/). 
 
 _**Note:** When at a hack with lots of Photon's around be sure you're connecting to **your** device. The Wifi SSID will be in the format of "Photon-nnnn". The 'nnnn' are from the 3 section of the devices serial number. The number should be visible on a sticker placed somewhere on your device's packaging._
 
 During this process you will be prompted to create a Particle Account and to name your device. Be sure to name the device something unique but meaningful so you can tell your device apart from others.
 
-Your photon can store the details of up to 5 wifi networks. If you need/want to manage these, please refer to the [Particle Reference documentation](https://docs.particle.io/reference/firmware/photon/#setcredentials-).
+Your photon can store the details of up to 5 WiFi networks. If you need/want to manage these, please refer to the [Particle Reference documentation](https://docs.particle.io/reference/firmware/photon/#setcredentials-).
 
 ## Setting up the firmware
-Particle provides an online, web based IDE that we can use to author and publish firmware to our device. So with the device set up, proceed to [https://build.particle.io] to start adding the Button Pong firmware.
-
-We start by creating an App, the project that will contain the firmware code we're goign to flash to our device. Start by naming the App then press "save" (click on the Folder icon on the upper left of the IDE). Don't forget to press "save". 
+Particle provides an online, web-based IDE that we can use to author and publish firmware to our device. So with the device set up, proceed to [https://build.particle.io] to start adding the Button Pong firmware.  We'll start by creating an App, the project that will contain the firmware code we're going to flash to our device. Start by naming the App then press "save" (click on the Folder icon on the upper left of the IDE). Don't forget to press "save". 
 
 Next we add some community libraries that are used by our sample firmware: InternetButton, InternetButtonEvents. We'll add these by selecting "Libraries" in the IDE (looks like a medal in the left hand menu). Search for the two libraries one at a time and after selecting them, click on "Include in project". If our App isn't listed, as a project we can include these in, then we didn't press "save". So return code area and create our app again and be sure to save it this time. 
 
 With the libraries added, we need need to paste in the baseline copy of the firmware. Copy the contents of the buttonpong.ino file from this repository into the .ino file for your App/project. A default one was created for you when you created the project. You want to replace everything in that file with the contents from buttonpong.ino file. 
 
-With the fireware, and libraries in place, press the lightning bolt icon in the IDE to flash the firmware to your device. 
+With the firmware, and libraries in place, press the lightning bolt icon in the IDE to flash the firmware to your device. 
+
+If you prefer, Particle also provides a local IDE, called [Particle Dev](https://docs.particle.io/guide/tools-and-features/dev/) which is based on the Atom editor.  Out-of-the-box, Particle Dev will allow you to develop locally, while still using the Particle cloud services to compile and deploy to your Particle Button.  The above steps can also be performed using Particle Dev, should you so choose.
 
 _**Note:** In the lower right corner of the IDE, you should see the name of your device listed with a slowly flashing blue icon, the "breathing" state of your Photon. If your device is not listed, click on the name that is to select your device (you may have multiple devices selected). If no devices are listed, then proceed back to the setup steps for the device and make sure its associated with your particle user account._
 
 ## Connecting the Device to the API
-Particlel provides a cloud back end to interact with devices. Button Leverages this to help the device call and be called by the API. The device publishes an event, and the cloud back end uses an integration webhook to perform an action. So to connect the API, we need to set up the integrations to call our Azure Function API. 
+Particle provides a cloud back end to interact with devices. Button Leverages this to help the device call and be called by the API. The device publishes an event, and the cloud back end uses an integration webhook to perform an action. So to connect the API, we need to set up the integrations to call our Azure Function API. 
 
 Before we start, we need to capture some information. From the Azure infrastructure:
 - the root URL of the App Service that our API is hosted in... \<myname\>.azurewebsites.net
-- the master host key for our function API (available from the Function app settings)
+- the master host key for our function API.  _(This can be obtained via the Azure portal by navigating to and of the Button Pong functions and pressing `Manage` under the function name.  In the resulting pane on the right-hand side, there will be a section for `Host Keys` under which there is an item named `_master`.   Using the `Click to Show` link will expose the master key for this Functions application.)_
 
 From the Particle Developer ID:
 - the device ID (select Devices, then your device to display the numeric device Id)
 - your account Access Token (click on Settings) to see your alphanumeric access token
 
+Or using the [Particle Command Line](https://docs.particle.io/guide/tools-and-features/cli/photon/):
+- the device ID can be retrieved by running `particle list`
+- your account Access Token can be retrieved by running `particle token list` and locating the `user` token in the output
+
 With this information in hand, we can proceed to the Particle Console IDE, [https://console.particle.io] and define our integrations. On the console IDE, select Integrations from the left hand menu, then web hook, then "Custom Template". 
 
-Using the register-webhook.json file provided in this repository, replace the contents of teh webhook template with the contents of the file and replace the following values:
+Using the register-webhook.json file provided in this repository, replace the contents of the webhook template with the contents of the file and replace the following values:
 
 \<apidns\> - use the dns name of your site
 
-\<masterhostkey\> - the master host key for our API functions
+\<masterhostkey\> - the master host key for our API functions. 
 
 \<myparticleaccesstoken\> - your particle account access token
 
@@ -116,7 +122,9 @@ Repeat this process for the pong-webhook.json and stsartsignal-webhook.json file
 
 _**Note:** Testing the webhook from the Particle Console IDE may result in a "Timed out" response. If this happens, refresh the page and look at the log to ensure that it did indeed fail and if so, why._
 
-Our Azure Function API has the ability to call any functions published by the device directly. So the "ping" from the API will go directly to the device using its Device ID and your account's Access Token. Therefore, there's no reason for us to set up a web hook for this integration point. 
+The [Particle Command Line](https://docs.particle.io/guide/tools-and-features/cli/photon/) can also be used to register the webhooks, using the command `particle webhook create <<FILENAME>>`, where `<<FILENAME>>` is the JSON template that was updated.
+
+Our Azure Functions API has the ability to call any functions published by the device directly. So the "ping" from the API will go directly to the device using its Device ID and your account's Access Token. Therefore, there's no reason for us to set up a web hook for this integration point. 
 
 Additionally, this firmware stores the "state" of the game (not running, registered, running, over). To reset this state, you will need to press the reset button of your device. While doing work with the device and API, this will be a pretty common occurance. 
 
@@ -151,4 +159,3 @@ As has been mentioned several times, this repo stops well short of implementing 
 - Display a scoring dashboard on another IOT Device, a web site, or using Power BI
 - add scalability to the solution to allow for more devices
 - add multiple 'balls' to the game so you can get more pings/pongs going at once
-
