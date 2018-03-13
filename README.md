@@ -17,6 +17,8 @@ This repository will accept pull requests, but only for the purpose of improving
 # Setting Up the Game API
 The game requires a Microsoft Azure subscription where the game API is hosted and two Particle Internet Buttons. Start by deploying the game API, then you can set up the 
 
+_**For operations in the particle web portals, its recommended you use the Chrome web browser.**_
+
 ## Azure Infrastructure
 The first step is setup is to deploy the API using Microsoft Azure's serverless solution: Functions. We'll start by creating the Azure environment for the API as follows:
 - Create an Azure Resource Group
@@ -96,7 +98,7 @@ Particle provides a cloud back end to interact with devices. Button Leverages th
 
 Before we start, we need to capture some information. From the Azure infrastructure:
 - the root URL of the App Service that our API is hosted in... \<myname\>.azurewebsites.net
-- the master host key for our function API.  _(This can be obtained via the Azure portal by navigating to and of the Button Pong functions and pressing `Manage` under the function name.  In the resulting pane on the right-hand side, there will be a section for `Host Keys` under which there is an item named `_master`.   Using the `Click to Show` link will expose the master key for this Functions application.)_
+- the master host key for our function API.  _(This can be obtained via the Azure portal by navigating to App Service resource that contains our Button Pong functions and selecting "Function App Settings" under "Configured features". This will open a new pane on the right-hand side, there will be a section for `Host Keys` under which there is an item named `_master`.   Using the `Click to Show` link will expose the master key for this Functions application and "copy" action will copy the value to your clipboard.)_
 
 From the Particle Developer ID:
 - the device ID (select Devices, then your device to display the numeric device Id)
