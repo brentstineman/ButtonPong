@@ -82,7 +82,7 @@ namespace CloudAPI
 
                             bpDevice randomDevice = gameState.GetRandomDevice();
                             log.Info($"StartGame: Sending initial ping to device {randomDevice.deviceId}.");
-                            SendToDevice.Ping(randomDevice, 2000);
+                            SendToDevice.Ping(randomDevice, 5000);
                         });
 
                         // spin off a thread to send the pings in the background so we can return immediately to caller
