@@ -30,6 +30,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,7 +47,7 @@ namespace CloudAPI
         {
             log.Info("StartGame received a request.");
 
-            HttpResponseMessage rtnResponse = null;
+            HttpResponseMessage rtnResponse = req.CreateResponse(HttpStatusCode.OK);
 
             // we'll only do this if we're not already doing start notifications
             if (notificationTask == null || notificationTask.Status != TaskStatus.Running)

@@ -68,7 +68,7 @@ namespace CloudAPI
                     // select next device to ping and prepare response (-1 if this is the last device, aka the winner)
                     bpDevice randomDevice = gameState.GetRandomDevice();
                     log.Info($"Sending initial ping to device {randomDevice.deviceId}.");
-                    //SendToDevice.Ping(randomDevice, (gameState.DeviceCount > 1 ? 5000 : -1));
+                    SendToDevice.Ping(randomDevice, (gameState.DeviceCount > 1 ? 5000 : -1));
                     if (gameState.DeviceCount <= 1) // game is over, stop game
                     {
                         gameState.StopGame();
