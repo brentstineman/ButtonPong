@@ -65,9 +65,9 @@ namespace CloudAPI
         }
 
         /// <summary>
-        /// private property for accessing registered devices
+        /// property for accessing registered devices
         /// </summary>
-        private List<bpDevice> mydevices
+        public List<bpDevice> GameState
         {
             get
             {
@@ -135,9 +135,9 @@ namespace CloudAPI
 
             if (!this.IsRunning) { // if a game isn't currently running
                 // add the device if its not already in the list
-                if (!mydevices.Exists(i => i.deviceId == newDevice.deviceId))
+                if (!GameState.Exists(i => i.deviceId == newDevice.deviceId))
                 {
-                    mydevices.Add(newDevice);
+                    GameState.Add(newDevice);
                     this.SaveState();
                     resultValue = true;
                 }
@@ -173,7 +173,7 @@ namespace CloudAPI
             get
             {
                 // the Devices getter will ensure we always have at least one item
-                return mydevices[0].accessToken == "true";
+                return GameState[0].accessToken == "true";
             }
         }
 
@@ -185,7 +185,7 @@ namespace CloudAPI
             get
             {
                 // get the count of the current number of devices
-                return (mydevices.Count - 1); // don't count the first one
+                return (GameState.Count - 1); // don't count the first one
             }
         }
 
@@ -194,7 +194,7 @@ namespace CloudAPI
         /// </summary>
         public void StartGame()
         {
-            mydevices[0].accessToken = "true"; // change game state
+            GameState[0].accessToken = "true"; // change game state
             SaveState(); // save updated state
         }
 
@@ -203,7 +203,7 @@ namespace CloudAPI
         /// </summary>
         public void StopGame()
         {
-            mydevices[0].accessToken = "false"; // change game state
+            GameState[0].accessToken = "false"; // change game state
             SaveState(); // save updated state
         }
 
@@ -212,7 +212,7 @@ namespace CloudAPI
         /// </summary>
         public void ResetGame()
         {
-            mydevices.Clear();
+            GameState.Clear();
             SaveState(); 
         }
 
@@ -222,8 +222,8 @@ namespace CloudAPI
         /// <returns></returns>
         public List<bpDevice> GetDeviceList()
         {
-            if (mydevices.Count > 1)
-                return mydevices.GetRange(1, devicelist.Count - 1);
+            if (GameState.Count > 1)
+                return GameState.GetRange(1, devicelist.Count - 1);
             else
                 return new List<bpDevice>();
         }
@@ -234,10 +234,10 @@ namespace CloudAPI
         /// <returns></returns>
         public bpDevice GetRandomDevice()
         {
-            if (mydevices.Count > 1)
+            if (GameState.Count > 1)
             {
                 int randomInt = new Random((int)DateTime.Now.Ticks).Next(1, devicelist.Count);
-                return mydevices[randomInt];
+                return GameState[randomInt];
             }
             else
                 return null;

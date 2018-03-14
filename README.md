@@ -51,6 +51,8 @@ The API consists of two functions, each implementing one method.
 
 **StartGame** - This method starts the game by sending a "ping" to every device with a value of '0' (zero) to notify them to start listening for game signals. It can only be called when a game is not currently running. This is exposed as a PUT method along the route '/api/game'.
 
+**GetGameState** - This method retrieves the current contents of the game "state bag" (the underlying blob). This is exposed as a GET method along the route 'api/game'.
+
 **RestGame** - This method clear the game state and all registered devices. Its intended to be use mainly to assist in debugging. This is exposed as a DELETE method along the route 'api/game'.
 
 This API has intentionally been kept minimal to allow for plenty of opportunities for extension and enhancement. 

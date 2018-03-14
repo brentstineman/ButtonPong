@@ -33,8 +33,7 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
@@ -98,9 +97,7 @@
 					"query": [
 						{
 							"key": "code",
-							"value": "{{DefaultHostKeyKey}}",
-							"equals": true,
-							"description": ""
+							"value": "{{DefaultHostKeyKey}}"
 						}
 					],
 					"variable": []
@@ -109,8 +106,7 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
@@ -137,13 +133,49 @@
 						{
 							"key": "code",
 							"value": "{{DefaultHostKeyKey}}",
+							"equals": true
+						}
+					],
+					"variable": []
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "Resets the Game"
+			},
+			"response": []
+		},
+		{
+			"name": "API - Get Game State",
+			"request": {
+				"url": {
+					"raw": "{{hosturl}}/api/game?code={{DefaultHostKeyKey}}",
+					"host": [
+						"{{hosturl}}"
+					],
+					"path": [
+						"api",
+						"game"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "{{DefaultHostKeyKey}}",
 							"equals": true,
 							"description": ""
 						}
 					],
 					"variable": []
 				},
-				"method": "DELETE",
+				"method": "GET",
 				"header": [
 					{
 						"key": "Content-Type",
@@ -155,7 +187,7 @@
 					"mode": "raw",
 					"raw": ""
 				},
-				"description": "Resets the Game"
+				"description": "Get the current game state bag"
 			},
 			"response": []
 		},
@@ -180,8 +212,7 @@
 						{
 							"key": "access_token",
 							"value": "{{ParticleAccessKey}}",
-							"equals": true,
-							"description": ""
+							"equals": true
 						}
 					],
 					"variable": []
@@ -190,8 +221,7 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
