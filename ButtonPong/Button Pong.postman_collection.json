@@ -86,7 +86,7 @@
 			"name": "API - Start Game",
 			"request": {
 				"url": {
-					"raw": "{{hosturl}}/api/game?code={{DefaultHostKeyKey}}",
+					"raw": "{{hosturl}}/api/game?code={{DefaultHostKey}}",
 					"host": [
 						"{{hosturl}}"
 					],
@@ -97,7 +97,9 @@
 					"query": [
 						{
 							"key": "code",
-							"value": "{{DefaultHostKeyKey}}"
+							"value": "{{DefaultHostKey}}",
+							"equals": true,
+							"description": ""
 						}
 					],
 					"variable": []
@@ -106,7 +108,8 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json"
+						"value": "application/json",
+						"description": ""
 					}
 				],
 				"body": {
@@ -121,7 +124,7 @@
 			"name": "API - Reset Game",
 			"request": {
 				"url": {
-					"raw": "{{hosturl}}/api/game?code={{DefaultHostKeyKey}}",
+					"raw": "{{hosturl}}/api/game?code={{DefaultHostKey}}",
 					"host": [
 						"{{hosturl}}"
 					],
@@ -132,8 +135,9 @@
 					"query": [
 						{
 							"key": "code",
-							"value": "{{DefaultHostKeyKey}}",
-							"equals": true
+							"value": "{{DefaultHostKey}}",
+							"equals": true,
+							"description": ""
 						}
 					],
 					"variable": []
@@ -142,7 +146,8 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json"
+						"value": "application/json",
+						"description": ""
 					}
 				],
 				"body": {
@@ -157,7 +162,7 @@
 			"name": "API - Get Game State",
 			"request": {
 				"url": {
-					"raw": "{{hosturl}}/api/game?code={{DefaultHostKeyKey}}",
+					"raw": "{{hosturl}}/api/game?code={{DefaultHostKey}}",
 					"host": [
 						"{{hosturl}}"
 					],
@@ -168,7 +173,7 @@
 					"query": [
 						{
 							"key": "code",
-							"value": "{{DefaultHostKeyKey}}",
+							"value": "{{DefaultHostKey}}",
 							"equals": true,
 							"description": ""
 						}
