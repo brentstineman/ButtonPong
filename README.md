@@ -5,7 +5,11 @@ This game was created to provide a starting point for coding events where attend
 
 ## How it works
 
-When a Particle Internet Button when activated with the game's firmware it will register with the game API hosted in Azure Functions. When all the devices that will participate in the game have registered, one person starts the game by depressing and holding down all four switches(buttons) on the device. This sends a single to the API to begin the game by sending a "ping" to a random device connected to the game. Upon receiving the "ping" the user of that device will get 2 seconds to depress any of the switches/buttons on their device. The device then sends a "pong" back to the Azure Function API to indicate if the user successfully depressed a button or not. If the user was not successful, the button will light up red and they are removed from the game. The API then "pings" a random device registered for the game. 
+The game, simply put is a type of virtual "ping pong" game. Pings get sent to a device, you press a button to respond with a ping which results in another device getting pinged. 
+
+When the game is set up, you start by pressing down on your button and activating all 4 of its switches. When done successfully, you'll get a positive tone and the right will light up briefly with a light blue color. When everyone that's going to play is ready, one person presses one of the switches on their device which results in all devices getting the "game ready" single and having a brief green ring. 
+
+A few seconds after the game starts, one of the devices will get a rainbow color which means they have been pinged. When the rainbow goes away they need to press a switch to "pong" the "ping" they just recieved. This will in turn send a new signal to random device. If you don't press a button fast enough, you will get a red light and a sad sound and be out of the game.
 
 This process continues until only one device is left at which time it is notified it is the winner and the game ends. 
 
@@ -146,8 +150,8 @@ As has been mentioned several times, this repo stops well short of implementing 
 - experiment with state stores other then Azure Storage
 
 #### Device Enhancements
-- give the ability to reset the game state stored the device either via an integration webhook, or via the device itself. Perhaps integrate this with the reset-game API
-- 
+- give the ability to reset the game state stored on the device either via an integration webhook, or via the device itself. Perhaps integrate this with the reset-game API
+- modify the "ping" response so that the timer doesn't start until after the rainbow affect is done. 
 
 #### Gameplay Enhancements
 - Add gameplay complexity
