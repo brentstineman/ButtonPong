@@ -1,7 +1,7 @@
 # ButtonPong
 "Button Pong" is a simple "ping pong" (hence the name) style game where signals are sent to connected devices and you need to press a button to send the signal back. The object is to be the last user/device standing. 
 
-This game was created to provide a starting point for coding events where attendees will be charged with fixing common problems or extending the solution to introduce new functionality to the game. It is built using [Microsoft Azure Functions](https://azure.microsoft.com) and [Patricle's Internet Button](https://docs.particle.io/guide/tools-and-features/button/photon/). The intent is to pro The internet button provides an excellent platform for learning about IOT programming without having to mess with wiring/breadboards. Serverless Azure Functions provide a simple and inexpensive way to host microservice based solutions. Together they are a fun way to explore the possibilities.
+This game was created to provide a starting point for coding events where attendees will be charged with fixing common problems or extending the solution to introduce new functionality to the game. It is built using [Microsoft Azure Functions](https://azure.microsoft.com) and [Patricle's Internet Button](https://docs.particle.io/guide/tools-and-features/button/photon/). The internet button provides an excellent platform for learning about IOT programming without having to mess with wiring/breadboards. Serverless Azure Functions provide a simple and inexpensive way to host microservice based solutions. Together they are a fun way to explore the possibilities.
 
 ## How it works
 
