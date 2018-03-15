@@ -180,7 +180,7 @@ void buttonClickedHandler(int buttonNumber) {
     if (gameState == STATE_GAME_READY) {
         Serial.println("Kicking off a game");
         b.playSong(TONE_GO);
-        Particle.publish("go");
+        Particle.publish("signalready");
     } else if (gameState == STATE_GAME_RESPONDING) {
 
         Serial.println("Successful move");
