@@ -9,12 +9,12 @@ The game, simply put is a type of virtual "ping pong" game. Pings get sent to a 
 
 When the game is set up, you start by pressing down on your button and activating all 4 of its switches. When done successfully, you'll get a positive tone and the right will light up briefly with a light blue color. When everyone that's going to play is ready, one person presses one of the switches on their device which results in all devices getting the "game ready" single and having a brief green ring. 
 
-A few seconds after the game starts, one of the devices will get a rainbow color which means they have been pinged. When the rainbow goes away they need to press a switch to "pong" the "ping" they just recieved. This will in turn send a new signal to random device. If you don't press a button fast enough, you will get a red light and a sad sound and be out of the game.
+A few seconds after the game starts, one of the devices will get a rainbow color which means they have been pinged. When the rainbow goes away they need to press a switch to "pong" the "ping" they just received. This will in turn send a new signal to random device. If you don't press a button fast enough, you will get a red light and a sad sound and be out of the game.
 
 This process continues until only one device is left at which time it is notified it is the winner and the game ends. 
 
 ## Using this for hacks and contributions
-If you intend to use this for hacks, have each team fork this repository to their own so they can work on their code there. This allows them to make their changes independently. Additionally, we (the origional authors of this repository) cannot help you secure Particle Buttons for your hack no matter how much we might like too. This is not a funded, official effort so we simply don't have anything that even resembles a budget.
+If you intend to use this for hacks, have each team fork this repository to their own so they can work on their code there. This allows them to make their changes independently. Additionally, we (the original authors of this repository) cannot help you secure Particle Buttons for your hack no matter how much we might like too. This is not a funded, official effort so we simply don't have anything that even resembles a budget.
 
 This repository will accept pull requests, but only for the purpose of improving the hack experience. The intention was to provide a simple game that could be extended, not to create a production ready game with lots of complexity. Please keep this in mind when submitting issues or PRs. 
 
@@ -134,7 +134,7 @@ The [Particle Command Line](https://docs.particle.io/guide/tools-and-features/cl
 
 Our Azure Functions API has the ability to call any functions published by the device directly. So the "ping" from the API will go directly to the device using its Device ID and your account's Access Token. Therefore, there's no reason for us to set up a web hook for this integration point. 
 
-Additionally, this firmware stores the "state" of the game (not running, registered, running, over). To reset this state, you will need to press the reset button of your device. While doing work with the device and API, this will be a pretty common occurance. 
+Additionally, this firmware stores the "state" of the game (not running, registered, running, over). To reset this state, you will need to press the reset button of your device. While doing work with the device and API, this will be a pretty common occurrence. 
 
 # Enhancement Ideas
 As has been mentioned several times, this repo stops well short of implementing many features that would make the game more reliable, less prone to exploitation, and very possibly, more fun. However, sometimes hacks are helped by providing some guidance, so the following is a list of possible enhancements or improvements your hack group could explore:
