@@ -57,7 +57,7 @@ namespace CloudAPI
             {
                 // Get request body, should contain deviceId and accessToken
                 bpPong pongData = await req.Content.ReadAsAsync<bpPong>();
-                log.Info($"Pong recieved from device {pongData.deviceId}.");
+                log.Info($"Pong received from device {pongData.deviceId}.");
 
                 GameStateManager gameState = new GameStateManager(); // get game state
                 if (gameState.IsRunning) // if game isn't running
