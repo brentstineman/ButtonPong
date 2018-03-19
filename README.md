@@ -1,7 +1,7 @@
 # ButtonPong
 "Button Pong" is a simple "ping pong" (hence the name) style game where signals are sent to connected devices and you need to press a button to send the signal back. The object is to be the last user/device standing. 
 
-This game was created to provide a starting point for coding events where attendees will be charged with fixing common problems or extending the solution to introduce new functionality to the game. It is built using [Microsoft Azure Functions](https://azure.microsoft.com) and [Patricle's Internet Button](https://docs.particle.io/guide/tools-and-features/button/photon/). The intent is to pro The internet button provides an excellent platform for learning about IOT programming without having to mess with wiring/breadboards. Serverless Azure Functions provide a simple and inexpensive way to host microservice based solutions. Together they are a fun way to explore the possibilities.
+This game was created to provide a starting point for coding events where attendees will be charged with fixing common problems or extending the solution to introduce new functionality to the game. It is built using [Microsoft Azure Functions](https://azure.microsoft.com) and [Patricle's Internet Button](https://docs.particle.io/guide/tools-and-features/button/photon/). The internet button provides an excellent platform for learning about IOT programming without having to mess with wiring/breadboards. Serverless Azure Functions provide a simple and inexpensive way to host microservice based solutions. Together they are a fun way to explore the possibilities.
 
 ## How it works
 
@@ -34,7 +34,7 @@ _**TODO:** provide this as an ARM template with CLI and PowerShell cmds to deplo
 ## Deploy the API via Visual Studio
 A C# version of the API has been provided as a Visual Studio 2017 solution. Using this Solution, any edition of the [Visual Studio 2017 IDE](https://www.visualstudio.com/downloads/), and the [Azure Functions and Web Jobs Tools extension](https://marketplace.visualstudio.com/items?itemName=VisualStudioWebandAzureTools.AzureFunctionsandWebJobsTools), you can quickly deploy the function based API to Azure. 
 
-Simply open the solution (/ButtonPont/ButtonPong.sln) file Visual Studio and then right click the "CloudAPI" project. Select "Publish" from the pop-up context menu and designate a new Azure Function App as your target. 
+Simply open the solution (/ButtonPont/ButtonPong.sln) file in Visual Studio and then right click the "CloudAPI" project. Select "Publish" from the pop-up context menu and designate a new Azure Function App as your target. 
 
 ## Deploy the API via the Azure Portal
 _**TODO:** provide details of this method_
@@ -51,13 +51,13 @@ The API consists of two functions, each implementing one method.
 
 **RegisterDevice** - This method allows a device to POST and register itself for the game. It receives a JSON payload that contains the device ID and its access token and stores this information as an Azure blob. This is exposed along the route '/api/devices'.
 
-**PongDevice** - This method allows a device to PUT a "pong" payload to the API that can either start a game or register the status of a previous "ping" and remove the device is it was not successful. This is exposed along the route 'api/pong'.
+**Pong** - This method allows a device to PUT a "pong" payload to the API that can either start a game or register the status of a previous "ping" and remove the device is it was not successful. This is exposed along the route 'api/pong'.
 
 **StartGame** - This method starts the game by sending a "ping" to every device with a value of '0' (zero) to notify them to start listening for game signals. It can only be called when a game is not currently running. This is exposed as a PUT method along the route '/api/game'.
 
-**GetGameState** - This method retrieves the current contents of the game "state bag" (the underlying blob). This is exposed as a GET method along the route 'api/game'.
+**GetGameStatus** - This method retrieves the current contents of the game "state bag" (the underlying blob). This is exposed as a GET method along the route 'api/game'.
 
-**RestGame** - This method clear the game state and all registered devices. Its intended to be use mainly to assist in debugging. This is exposed as a DELETE method along the route 'api/game'.
+**RestartGame** - This method clear the game state and all registered devices. Its intended to be use mainly to assist in debugging. This is exposed as a DELETE method along the route 'api/game'.
 
 This API has intentionally been kept minimal to allow for plenty of opportunities for extension and enhancement. 
 
@@ -73,9 +73,9 @@ For more on Postman environments and variables, please see the [Postman Online D
 # Setting up the Particle Button
 
 The Particle Internet Button was chosen for this project for several reasons:
-1. as previously mentioned, no wiring is required. The button is a self contained prototyping platform
+1. As previously mentioned, no wiring is required. The button is a self contained prototyping platform
 2. Particle provides an online IDE for publishing to the devices with a comprehensive sample library
-3. it has built WiFi so its just "connect and go"
+3. It has built-in WiFi so it's just "connect and go"
 
 ## Registering your device
 We start by registering our button and setting up the WiFi. The Button's brain is a Particle Photon, so we'll follow the [setup instructions provided by Particle](https://docs.particle.io/guide/tools-and-features/button/core/). This can be done via the Apple or Android apps, USB, or [from your computer](https://setup.particle.io/). The Photon is a 'headless' device, so if your WiFi requires you to log in via a web page, you'll need to talk with your WiFi administrators about how to register your device's MAC address. For details on obtaining the device's MAC address, please refer to this [blog post](https://blog.jongallant.com/2015/08/particle-photon-mac-address/). 
