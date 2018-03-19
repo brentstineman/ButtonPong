@@ -38,7 +38,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"deviceId\" : \"mydeviceid\",\n  \"success\" : true\n}"
+					"raw": "{\n  \"deviceId\" : \"{{deviceid}}\",\n  \"success\" : true\n}"
 				},
 				"description": "Send a \"ping\" response or \"pong\" message to the Button Pong API. "
 			},
@@ -76,7 +76,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"deviceId\": \"mydeviceid\",\r\n    \"accessToken\": \"myaccesstoken\"\r\n}"
+					"raw": "{\r\n    \"deviceId\": \"{{deviceid}}\",\r\n    \"accessToken\": \"{{ParticleAccessKey}}\"\r\n}"
 				},
 				"description": "Register a device with the Button Pong API"
 			},
