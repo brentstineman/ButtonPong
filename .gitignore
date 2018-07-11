@@ -39,6 +39,9 @@ bld/
 [Oo]bj/
 [Ll]og/
 
+# Azure Functions local files
+local.settings.json
+
 # Visual Studio 2015/2017 cache/options directory
 .vs/
 
