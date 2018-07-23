@@ -1,19 +1,17 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using CloudApi.Infrastructure;
 using CloudApi.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 
 namespace CloudApi
 {
     /// <summary>
-    ///   Provides the API for regisering a device "pong" response.
+    ///   Provides the API for managing "pings" for a game.
     /// </summary>
     /// 
-    public static class Pong
+    public static class PingManager
     {
         /// <summary>The manager of state to use for processing requests.</summary>
         private static GameStateManager stateManager = new GameStateManager(
@@ -35,66 +33,56 @@ namespace CloudApi
         ///   Exposes the function API.
         /// </summary>
         /// 
-        /// <param name="device">The device sending the "pong" response.</param>
+        /// <param name="timer">The timer that triggered execution.</param>
         /// <param name="logger">The logger to use for writing log information.</param>
-        /// 
-        /// <returns>The action result detailing the HTTP response.</returns>
-        /// 
-        [FunctionName(nameof(Pong))]
-        public async static Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "PUT", Route = "pong")]GameDevice device, 
+        ///
+        [FunctionName(nameof(PingManager))]
+        public async static Task Run([TimerTrigger("%" + ConfigurationNames.PingManagerSchedule + "%", RunOnStartup = false)]TimerInfo timer, 
                                                     ILogger logger)
-        {
-            logger.LogInformation($"{ nameof(Pong) } processed a request.");
+        {            
+            logger.LogInformation($"{ nameof(PingManager) } executed at: { DateTime.Now }.");            
+                 
+            // Get a snapshot of the state before the pings are managed to allow for short-circuiting if a game
+            // is not underway.
 
-            if (String.IsNullOrEmpty(device?.DeviceId))
+            var initialState = await PingManager.stateManager.GetGameStateAync();
+
+            // If the game is not currently active, then no further action is needed.
+
+            if ((initialState.Activity != GameActivity.InProgress) || (initialState.ActiveDevices.Count == 0))                    
             {
-                return new BadRequestObjectResult(new ErrorMessage(@"Please pass the device identifier and a success indicator in the body of your request: { ""deviceId"" : ""value"", ""success"" : ""value""}"));
+                logger.LogInformation($"{ nameof(PingManager) } detected game is not running or has no active devices at: { DateTime.Now }.");
+                return;
             }
 
-            // Attempt to register the pong, which may or may not be accepted depending on the curent state.  If the pong was not accepted, then
-            // take no further action.   
+            // Manage the pings.
 
-            var (pongAccepted, pongState) = await Pong.stateManager.RecordPong(device.DeviceId);
-
-            if (!pongAccepted)
-            {
-                return new OkObjectResult(pongState);
-            }
-
-            // If the pong was accepted, manage the active ping.  This will allow the device sending the pong to update
-            //  the status and then perform any tasks needed to generate a new ping or determine the game winner.
-            //
-            // NOTE: The Pong and ManageActivePing operations are distinct and not performed atomically; it is possible 
-            //       for another caller to have already performed the ping management between the two calls, by design.
-
-            var (newPing, expired, currentState) = await Pong.stateManager.ManageActivePing(Pong.maxPingAge);
+            var (newPing, expired, currentState) = await PingManager.stateManager.ManageActivePing(PingManager.maxPingAge);
 
             // If there was a device eliminated, then signal it.
 
             if (((expired != null) && (currentState.RegisteredDevices.ContainsKey(expired.DeviceId ?? String.Empty))))
             {
-                logger.LogInformation($"{ nameof(Pong) } signaling elimination to { expired?.DeviceId } at: { DateTime.Now }.");
+                logger.LogInformation($"{ nameof(PingManager) } signaling elimination to { expired?.DeviceId } at: { DateTime.Now }.");
 
-                Pong.communicator
+                PingManager.communicator
                     .SendEliminatedEventAsync(currentState.RegisteredDevices[expired.DeviceId])
                     .FireAndForget(exception => logger.LogError(exception, $"An exception occurred signaling device: { expired.DeviceId } of its elimination"));
             }
 
-            // If the game was completed when managing the active ping, signal completion and the winner.  If 
-            // the game was already complete when the pong was sent, then another function invocation completed it and
-            // has responsibility for device communication.
+            // If the game was completed when managing the active ping, signal completion and the winner.  
 
-            if ((currentState.Activity == GameActivity.Complete) && (currentState.Activity != pongState.Activity))
+            if ((currentState.Activity == GameActivity.Complete) && (currentState.Activity != initialState.Activity))
             {
-                logger.LogInformation($"{ nameof(Pong) } signaling game complete at: { DateTime.Now }.");
+                logger.LogInformation($"{ nameof(PingManager) } signaling game complete at: { DateTime.Now }.");
 
-                Pong.communicator
+                PingManager.communicator
                     .SendEndEventAsync(currentState.RegisteredDevices.Values)
                     .FireAndForget(exception => logger.LogError(exception, "An exception occurred signaling all registered devices that the game has ended."));
 
                 if (currentState.RegisteredDevices.ContainsKey(currentState.WinningDeviceId))
                 {
-                    Pong.communicator
+                    PingManager.communicator
                         .SendWinEventAsync(currentState.RegisteredDevices[currentState.WinningDeviceId])
                         .FireAndForget(exception => logger.LogError(exception, $"An exception occurred signaling device: { currentState.WinningDeviceId } that it has won."));
                }
@@ -104,14 +92,12 @@ namespace CloudApi
 
             if ((newPing != null) && (currentState.ActiveDevices.Contains(newPing?.DeviceId ?? String.Empty)))
             {
-                logger.LogInformation($"{ nameof(Pong) } sending ping to { newPing?.DeviceId } at: { DateTime.Now }.");
+                logger.LogInformation($"{ nameof(PingManager) } sending ping to { newPing?.DeviceId } at: { DateTime.Now }.");
 
-                Pong.communicator
-                    .SendPingEventAsync(currentState.RegisteredDevices[newPing.DeviceId], Pong.pingTimeout)
+                PingManager.communicator
+                    .SendPingEventAsync(currentState.RegisteredDevices[newPing.DeviceId], PingManager.pingTimeout)
                     .FireAndForget(exception => logger.LogError(exception, $"An exception occurred signaling device: { expired.DeviceId } of its elimination"));
             }
-
-            return new OkObjectResult(currentState);
         }
     }
 }

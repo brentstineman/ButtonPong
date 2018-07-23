@@ -5,6 +5,9 @@
     "AzureWebJobsStorage": "<connectionstring>",
     "AzureWebJobsDashboard": "<connectionstring>",
     "storageConnString": "<connectionstring>",
-    "storageContainer": "gamedata"
+    "storageContainer": "gamedata",
+    "pingManagerSchedule" : "*/45 * * * * *",
+    "pingMaxAgeSeconds": 20,
+    "pingTimeoutSeconds": 5
   }
 }
