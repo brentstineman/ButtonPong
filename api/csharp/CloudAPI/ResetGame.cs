@@ -10,10 +10,10 @@ using Microsoft.Extensions.Logging;
 namespace CloudApi
 {
     /// <summary>
-    ///   Provides the API for retrieving a game status.
+    ///   Provides the API for resetting a game, including all registered devices.
     /// </summary>
     /// 
-    public static class GetGameStatus
+    public static class ResetGame
     {
         /// <summary>The manager of state to use for processing requests.</summary>
         private static GameStateManager stateManager = new GameStateManager(
@@ -29,13 +29,12 @@ namespace CloudApi
         /// 
         /// <returns>The action result detailing the HTTP response.</returns>
         /// 
-        [FunctionName(nameof(GetGameStatus))]
-        public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "GET", Route = "game")]HttpRequestMessage request, 
-                                                    ILogger logger)
+        [FunctionName(nameof(ResetGame))]
+        public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "DELETE", Route = "game")]HttpRequestMessage request, ILogger logger)
         {
-            logger.LogInformation($"{ nameof(GetGameStatus) } processed a request.");
+            logger.LogInformation($"{ nameof(ResetGame) } processed a request.");
 
-            var gameState = await GetGameStatus.stateManager.GetGameStateAync();            
+            var gameState = await ResetGame.stateManager.ResetGame();
 
             return new OkObjectResult(gameState);
         }
