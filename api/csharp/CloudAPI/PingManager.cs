@@ -22,8 +22,8 @@ namespace CloudApi
         private static TimeSpan maxPingAge = TimeSpan.FromSeconds(
             Int32.Parse(Environment.GetEnvironmentVariable(ConfigurationNames.PingMaxAgeSeconds)));
 
-        /// <summary>The maximum age of a ping before it expires.</summary>
-        private static int pingTimeout = 
+        /// <summary>The amount of time that is signaled to devices as the suggested timeout when awaiting for a pong to be triggered.</summary>
+        private static int pingTimeoutSeconds = 
             Int32.Parse(Environment.GetEnvironmentVariable(ConfigurationNames.PingTimeout));
 
         /// <summary>The communicator to use for interacting with the game devices..</summary>
@@ -95,7 +95,7 @@ namespace CloudApi
                 logger.LogInformation($"{ nameof(PingManager) } sending ping to { newPing?.DeviceId } at: { DateTime.Now }.");
 
                 PingManager.communicator
-                    .SendPingEventAsync(currentState.RegisteredDevices[newPing.DeviceId], PingManager.pingTimeout)
+                    .SendPingEventAsync(currentState.RegisteredDevices[newPing.DeviceId], PingManager.pingTimeoutSeconds)
                     .FireAndForget(exception => logger.LogError(exception, $"An exception occurred signaling device: { expired.DeviceId } of its elimination"));
             }
         }
