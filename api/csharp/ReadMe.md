@@ -25,3 +25,5 @@ As has been mentioned several times, this implementation stops well short of man
 - Consider moving game state to a storage mechanism other than blob storage.  For example, Cosmos DB.  _(don't forget concurrency guards)_
 &nbsp;
 - Devise a better solution for managing active pings, preferably something that can be toggled on/off as the game state dictates, rather than running continuously.  Perhaps using Logic Apps or a Service Bus topic is worth considering.
+&nbsp;
+- Add telemetry information or an app gateway to the API to allow for monitoring.-
