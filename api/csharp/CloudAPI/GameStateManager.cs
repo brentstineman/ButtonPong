@@ -57,7 +57,6 @@ namespace CloudApi
 
             this.stateBlob            = this.stateContainer.GetBlockBlobReference(GameStateManager.StateBlobName);
             this.stateLeaseLengthTime = stateLeaseLengthTime ?? GameStateManager.DefaultLeaseLength;
-
         }
 
         /// <summary>
@@ -678,6 +677,7 @@ namespace CloudApi
         ///   Represents the need for persistence of game state; intended only for private
         ///   use.
         /// </summary>
+        /// 
         private enum StatePersistence
         {
             PersistState,
