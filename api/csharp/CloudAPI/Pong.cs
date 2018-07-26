@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 namespace CloudApi
 {
     /// <summary>
-    ///   Provides the API for regisering a device "pong" response.
+    ///   Provides the API for registering a device "pong" response.
     /// </summary>
     /// 
     public static class Pong

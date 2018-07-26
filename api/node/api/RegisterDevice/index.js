@@ -14,14 +14,15 @@ const templateDevice    = new GameDevice();
  * @returns { bool } true, if the body is valid; otherwise, false
  */
 const validateRequestBody = body => {
-    if ((typeof(body) === "undefined") || (body === null)) {
+    if ((typeof(body) === "undefined") || (body === null))
+    {
         return false;
     }
 
     let result = true;
 
     Object.getOwnPropertyNames(templateDevice).forEach(attribute => {
-        debugger;
+
         if ((!body.hasOwnProperty(attribute))      ||
             (typeof(body[attribute]) !== "string") ||
             (body[attribute].length <= 0)) {

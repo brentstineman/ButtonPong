@@ -11,7 +11,7 @@ const GameDevice   = require("../../shared/models/gameDevice");
  * @param { object } request  The incoming HTTP request being processed
  *
  */
-module.exports = function getStatus(context, request) {
+module.exports = function pong(context, request) {
     context.log("Get Status function processed a request.");
 
     // useless test code
