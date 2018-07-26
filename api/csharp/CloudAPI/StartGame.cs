@@ -45,7 +45,7 @@ namespace CloudApi
         public async static Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "PUT", Route = "game")]HttpRequestMessage request, 
                                                      ILogger logger)
         {
-            logger.LogInformation($"{ nameof(Pong) } processed a request.");
+            logger.LogInformation($"{ nameof(StartGame) } processed a request.");
 
             // Attempt to start the game, validating the current state meets the required
             // conditions.

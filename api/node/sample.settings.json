@@ -1,0 +1,14 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "NODE_OPTIONS": "--inspect=9229",
+    "AzureWebJobsStorage": "<connectionstring>",
+    "AzureWebJobsDashboard": "<connectionstring>",
+    "storageConnString": "<connectionstring>",
+    "storageContainer": "gamedata",
+    "pingManagerSchedule" : "*/45 * * * * *",
+    "pingMaxAgeSeconds": 20,
+    "pingTimeoutSeconds": 5
+  }
+}
