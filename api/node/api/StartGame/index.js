@@ -1,5 +1,5 @@
-const GameActivity = require("../shared/models/gameActivity");
-const GameState    = require("../shared/models/gameState");
+const GameActivity = require("../../shared/models/gameActivity");
+const GameState    = require("../../shared/models/gameState");
 
 /**
  * Provides the API for starting a game, if it is in the proper state to do so.

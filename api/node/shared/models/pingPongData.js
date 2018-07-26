@@ -34,13 +34,16 @@ class PingPongData {
             return false;
         }
 
-        for (let member in this.getOwnPropertyNames()) {
-            if ((!other.hasOwnProperty(member)) || (this[member] !== other[member])) {
-                return false;
-            }
-        }
+        let result = true;
 
-        return true;
+       this.getOwnPropertyNames().forEach(member => {
+            if ((!other.hasOwnProperty(member)) || (this[member] !== other[member])) {
+                result = false;
+                return;
+            }
+        });
+
+        return result;
     }
 }
 

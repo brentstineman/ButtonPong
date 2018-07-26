@@ -1,6 +1,6 @@
-const GameDevice   = require("../shared/models/gameDevice");
-const DeviceState  = require("../shared/models/deviceState");
-const DeviceStatus = require("../shared/models/deviceStatus");
+const GameDevice   = require("../../shared/models/gameDevice");
+const DeviceState  = require("../../shared/models/deviceState");
+const DeviceStatus = require("../../shared/models/deviceStatus");
 
 const badRequestMessage = "Please pass the device identifier and access token in the body of your request: { \"deviceId\" : \"value\", \"accesstoken\" : \"value\"}";
 const templateDevice    = new GameDevice();
@@ -18,20 +18,20 @@ const validateRequestBody = body => {
         return false;
     }
 
-    let x = Object.getOwnPropertyNames(templateDevice);
-    let y=  Object.keys(templateObject);
+    let result = true;
 
-debugger;
-    for (let attribute in Object.getOwnPropertyNames(templateDevice)) {
+    Object.getOwnPropertyNames(templateDevice).forEach(attribute => {
+        debugger;
         if ((!body.hasOwnProperty(attribute))      ||
-            (typeof(body[attribute]) === "string") ||
-            (body[attribute].length > 0)) {
+            (typeof(body[attribute]) !== "string") ||
+            (body[attribute].length <= 0)) {
 
-            return false;
+            result = false;
+            return;
         }
-    }
+    });
 
-    return true;
+    return result;
 };
 
 /**
@@ -47,6 +47,7 @@ module.exports = function registerDevice(context, request) {
     context.log("Register Device function processed a request.");
 
     // Verify that there was a valid game device received.
+
     if (!validateRequestBody(request.body)) {
         const response = {
             status  : 400,
@@ -56,7 +57,6 @@ module.exports = function registerDevice(context, request) {
 
         context.done(null, response);
     }
-
 
     // useless test code
     const status = new DeviceStatus({ device: request.body, status: DeviceState.RegisteredActive });

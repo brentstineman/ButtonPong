@@ -1,5 +1,5 @@
-const GameActivity = require("../shared/models/gameActivity");
-const GameState    = require("../shared/models/gameState");
+const GameActivity = require("../../shared/models/gameActivity");
+const GameState    = require("../../shared/models/gameState");
 
 /**
  * Provides the API for resetting a game, including all registered devices.

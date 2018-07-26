@@ -5,7 +5,7 @@
       "label": "Run Functions Host",
       "identifier": "runFunctionsHost",
       "type": "shell",
-      "command": "func host start",
+      "command": "cd api && func host start",
       "options": {
         "env": {
           "languageWorkers:node:arguments": "--inspect=9229",

@@ -9,7 +9,7 @@
     "Jesse Squire"
   ],
 
-  "main": "host.json",
+  "main": "api/host.json",
 
   "sideEffects": [
   ],
@@ -21,7 +21,7 @@
 
   "scripts": {
     "start": "npm run env/init -s -- npm run exec",
-    "exec": "func host start",
+    "exec": "cd api && func host start",
     "env/init": "cross-var cross-env NODE_ENV=$npm_package_config_environment NODE_OPTIONS=--inspect=$npm_package_config_debugPort"
   },
 

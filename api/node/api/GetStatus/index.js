@@ -1,6 +1,6 @@
-const GameActivity = require("../shared/models/gameActivity");
-const GameState    = require("../shared/models/gameState");
-const GameDevice   = require("../shared/models/gameDevice");
+const GameActivity = require("../../shared/models/gameActivity");
+const GameState    = require("../../shared/models/gameState");
+const GameDevice   = require("../../shared/models/gameDevice");
 
 /**
  * Provides the API for retrieving a game status.
