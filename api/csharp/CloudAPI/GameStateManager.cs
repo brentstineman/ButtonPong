@@ -663,7 +663,7 @@ namespace CloudApi
 
             if (String.IsNullOrEmpty(deviceId))
             {
-                var selectedIndex = GameStateManager.RandomNumberGenerator.Next(0, gameState.ActiveDevices.Count);
+                var selectedIndex = GameStateManager.RandomNumberGenerator.Next(0, (gameState.ActiveDevices.Count - 1));
                 deviceId = gameState.ActiveDevices.ElementAt(selectedIndex);
             }
 

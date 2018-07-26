@@ -26,7 +26,6 @@ void setup() {
 
     Particle.function("startGame", startGame);
     Particle.function("ping", ping);
-	Particle.function("winner", winner);
 
     buttonEvents.onButtonClicked(buttonClickedHandler);
     buttonEvents.onAllButtonsClicked(allButtonsClickedHandler);
@@ -174,18 +173,6 @@ int ping(String timeout) {
     }
 
     return val;
-}
-
-int winner(String args) {
-    Serial.println("Received winner event!");
-    
-    // YOU WON!
-    gameState = STATE_GAME_OVER;
- 
-    b.playSong(TONE_WINNER);
-    b.rainbow(10);
-    
-    return 1;
 }
 
 void buttonClickedHandler(int buttonNumber) {
