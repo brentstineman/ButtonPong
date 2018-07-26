@@ -51,13 +51,13 @@ The API consists of several Azure Functions, each implementing a single member o
 
 The first step is setup is to deploy the API using Azure's serverless solution: Functions. We'll start by creating the Azure environment for the API as follows:
 
-1. Create an Azure Resource Group
-1. In the resource group, create a general use (tables, blobs, queues) version 2 storage account.
-1. Create a consumption-based App Service Plan to host your functions
+1. Create an Azure Resource Group.
+1. In the resource group, create a new general use (tables, blobs, queues) version 2 storage account.
+1. Create a new Function App with a consumption-based App Service Plan to host your Azure Functions.
 
 _**TODO:** provide this as an ARM template with CLI and PowerShell commands to deploy it._
 
-## Deploy the API via the Azure Portal
+## Deploy the API
 This should work regardless of the underlying implementation technical stack, development environment, or language.
 
 _**TODO:** provide details of this method_
