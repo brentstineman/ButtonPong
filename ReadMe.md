@@ -4,23 +4,23 @@
 
 "Button Pong" is a simple "ping pong" (hence the name) style game where signals are sent to connected devices and you need to press a button in response to send the signal back. Failure to "pong" the signal back results in elimination from the game.  The object is to be the last user/device standing.
 
-This game was created to provide a starting point for coding events where attendees will be charged with fixing common problems or extending the solution to introduce new functionality to the game. It is built using [Microsoft Azure Functions](https://azure.microsoft.com) and [Particle's Internet Button](https://docs.particle.io/guide/tools-and-features/button/photon/). The Internet Button provides an excellent platform for learning about IOT programming without having to mess with wiring/breadboards. Serverless Azure Functions provide a simple and inexpensive way to host microservice based solutions. Together they are a fun way to explore the possibilities.
+This game was created to provide a starting point for coding events where attendees will be charged with fixing common problems or extending the solution to introduce new functionality to the game. It is built using [Microsoft Azure Functions](https://azure.microsoft.com/en-us/services/functions/) and [Particle's Internet Button](https://docs.particle.io/guide/tools-and-features/button/photon/). The Internet Button provides an excellent platform for learning about IoT programming without having to mess with wiring/breadboards. Serverless Azure Functions provide a simple and inexpensive way to host microservice based solutions. Together they are a fun way to explore the possibilities.
 
 ## How It Works
 
-The game, simply put is a type of virtual "ping pong" game. Pings are sent to a device, after receiving one, you press a button to respond with a pong which results in another selection for being pinged.  When only one device remains in the game, that device is declared the winner and the game ends.
+The game, simply put, is a type of virtual "ping pong" game. Pings are sent to a device, after receiving one, you press a button to respond with a pong which results in another selection for being pinged.  When only one device remains in the game, that device is declared the winner and the game ends.
 
-Once the game is set up, a device can be registered for it by pressing down on your button and activating all 4 of its switches. When done successfully, you'll get a positive tone and the right will light up briefly with a light blue color. When everyone that's going to play is ready, one person presses one of the switches on their device which results in all devices getting the "game ready" single and having a brief green ring.
+Once the game is set up, a device can be registered to join the game by pressing down on your button and activating all 4 of its switches. When done successfully, you'll get a positive tone and the device will light up briefly with a light blue color. When everyone that's going to play is ready, one person presses one of the switches on their device which results in all devices getting the "game ready" single and having a brief green ring.
 
-A few seconds after the game starts, one of the devices will get a rainbow color which means they have been pinged. When the rainbow goes away they need to press a switch to "pong" the "ping" they just received. This will in turn send a new signal to random device. If you don't press a button fast enough, you will get a red light and a sad sound and be out of the game.
+A few seconds after the game starts, one of the devices will get a rainbow color which means they have been pinged. When the rainbow goes away, the player needs to press a switch to "pong" the "ping" they just received. This will in turn send a new signal to random device. If you don't press a button fast enough, you will get a red light and a sad sound and be out of the game.
 
 This process continues until only one device is left at which time it is notified it is the winner and the game ends.
 
 ## Basic Requirements
 
-In order for the game to work as designed, it requires a Microsoft Azure subscription for hosting the API, and a minimum of two Particle Internet Buttons to play.  Specific requirements for the API and firmware, including set-up and deployment, will appear in dedicated ReadMe files in their associated areas of the repository.  _(please see the [repository structure](#repository-structure) below for context)_
+In order for the game to work as designed, it requires a [Microsoft Azure](https://azure.microsoft.com) subscription for hosting the API, and a minimum of two Particle Internet Buttons to play.  Specific requirements for the API and firmware, including set-up and deployment, will appear in dedicated ReadMe files in their associated areas of the repository.  _(please see the [repository structure](#repository-structure) below for context)_
 
-It is recommended that you start with building, deploying, and configuring the API.  Once the API has been smoke tested using Postman or a similar tool, then move to setting up the Particle Internet Buttons.
+It is recommended that you start with building, deploying, and configuring the API.  Once the API has been smoke tested using [Postman](https://www.getpostman.com/) or a similar tool, then move to setting up the Particle Internet Buttons.
 
 ## Using The Assets for Hacks
 

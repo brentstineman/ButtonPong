@@ -4,7 +4,7 @@
 
 The Particle Internet Button was chosen for this project for several reasons:
 
-1. The button is a self contained prototyping platform, no wiring is required
+1. The button is a self-contained prototyping platform, no wiring is required
 1. Particle provides an online IDE for publishing to the devices with a comprehensive sample library
 1. It has built-in WiFi so it's just "connect and go"
 
@@ -22,7 +22,7 @@ Your photon can store the details of up to 5 WiFi networks. If you need/want to 
 
 Particle provides an online, web-based IDE that can be used to author and publish firmware to a device. So with your device set up, proceed to the [Particle Build Site](https://build.particle.io) to start adding the Button Pong firmware.  We'll start by creating an App, the project that will contain the firmware code we're going to flash to our device. Start by naming the App then press "save" (click on the Folder icon on the upper left of the IDE). Don't forget to press "save".
 
-Next we add some community libraries that are used by our sample firmware: InternetButton, InternetButtonEvents. We'll add these by selecting "Libraries" in the IDE (looks like a medal in the left hand menu). Search for the two libraries one at a time and after selecting them, click on "Include in project". If our App isn't listed, as a project we can include these in, then we didn't press "save". So return code area and create our app again and be sure to save it this time.
+Next we add some community libraries that are used by our sample firmware: InternetButton, InternetButtonEvents. We'll add these by selecting "Libraries" in the IDE (looks like a medal in the left hand menu). Search for the two libraries one at a time and after selecting them, click on "Include in project". If our App isn't listed, as a project we can include these in, then we didn't press "save". So return to the code area and create our app again and be sure to save it this time.
 
 With the libraries added, we need need to paste in the baseline copy of the firmware. Copy the contents of the buttonpong.ino file from this repository into the .ino file for your App/project. A default one was created for you when you created the project. You want to replace everything in that file with the contents from buttonpong.ino file.
 
@@ -34,7 +34,7 @@ _**Note:** In the lower right corner of the IDE, you should see the name of your
 
 ## Connecting the Device to the API
 
-Particle provides a cloud back end to interact with devices. Button Leverages this to help the device call and be called by the API. The device publishes an event, and the cloud back end uses an integration webhook to perform an action. So to connect the API, we need to set up the integrations to call our Azure Function API.
+Particle provides a cloud back end to interact with devices. The Particle Internet Button leverages this to help the device call and be called by the API. The device publishes an event, and the cloud back end uses an integration webhook to perform an action. So to connect the API, we need to set up the integrations to call our Azure Function API.
 
 Before we start, we need to capture some information. From the Azure infrastructure:
 
