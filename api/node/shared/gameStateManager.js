@@ -31,7 +31,7 @@ const createBlobClient = connectionString => {
     // game state management instead of working with callbacks or doing manual
     // creation of promises.
 
-    client.acquireLease                    = promisify(client.acquireLease);
+    client.acquireLeaseAsync               = promisify(client.acquireLease);
     client.releaseLeaseAsync               = promisify(client.releaseLease);
     client.createContainerIfNotExistsAsync = promisify(client.createContainerIfNotExists);
     client.getBlobToTextAsync              = promisify(client.getBlobToText);
@@ -59,7 +59,7 @@ const acquireLeaseAsync = async (blobClient, storageContainer, leaseDurationSeco
 
     while ((!operationComplete) && (executeCount <= 1)) {
         try {
-            lease             = await blobClient.acquireLease(storageContainer, stateBlobName, { leaseDuration : leaseDurationSeconds });
+            lease             = await blobClient.acquireLeaseAsync(storageContainer, stateBlobName, { leaseDuration : leaseDurationSeconds });
             operationComplete = true;
         }
 
