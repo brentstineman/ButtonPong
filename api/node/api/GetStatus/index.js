@@ -1,6 +1,4 @@
-const GameActivity = require("../../shared/models/gameActivity");
-const GameState    = require("../../shared/models/gameState");
-const GameDevice   = require("../../shared/models/gameDevice");
+const GameStateManager = require("../../shared/gameStateManager");
 
 /**
  * Provides the API for retrieving a game status.
@@ -11,20 +9,27 @@ const GameDevice   = require("../../shared/models/gameDevice");
  * @param { object } request  The incoming HTTP request being processed
  *
  */
-module.exports = function pong(context, request) {
+module.exports = async function getStatus(context, request) {
     context.log("Get Status function processed a request.");
 
-    // useless test code
-    const state = new GameState({ activity: GameActivity.NotStarted });
-    state.registeredDevices["123"] = new GameDevice({ deviceId: "123", accessToken: "ABC" });
-    state.activeDevices.push(state.registeredDevices["123"].deviceId);
-    state.activeDevices.push("456");
+    const thing = new GameStateManager("DefaultEndpointsProtocol=https;AccountName=squirepong;AccountKey=Yu5mlOScPPhHmt830ms1EPp+NuA3E0rQ8a0+34311XKxuAycko5N6F320HB6Lhl1Ugw56iIBlP6C913CE4z6sA==;EndpointSuffix=core.windows.net", "jesselocal");
+
+    const gameState = await thing.getGameStateAsync();
 
     const response = {
         status  : 200,
         headers : { "Content-Type" : "application/json" },
-        body    : state
+        body    : gameState || { state: "Nothing" }
     };
 
-    context.done(null, response);
-};
+    // NOTE: Due to a bug in the Azure Functions host, because this function returns a promise, the response should be returned directly
+    //       as the runtime will attempt to resolve the promise.
+    //
+    //       Calling "done" will result in an error message written o the console
+    //       about calling "done" twice.  This is a known issue with using "async" and is due to be fixed in a forthcoming release.
+    //       Function execution is not impacted; a graceful validation in the runtime is erroneously tripped.
+    //
+    //       See: https://github.com/Azure/azure-functions-nodejs-worker/pull/99
+
+    return response;
+}

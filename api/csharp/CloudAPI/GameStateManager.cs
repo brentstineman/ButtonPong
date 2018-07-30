@@ -14,10 +14,11 @@ using Newtonsoft.Json;
 namespace CloudApi
 {
     /// <summary>
-    /// A simple state manager for the game. Stores information in Azure Blob storage
-    /// the first entry in the list stores if the game is running or not
-    /// subsequent entries are the list of devices playing the game
+    ///   A simple state manager for the game. Stores information in Azure Blob storage
+    ///   the first entry in the list stores if the game is running or not
+    ///   subsequent entries are the list of devices playing the game
     /// </summary>
+    /// 
     internal class GameStateManager
     {
         /// <summary>The name of the blob in storage which holds the game state.</summary>
@@ -446,7 +447,7 @@ namespace CloudApi
             try
             {
                 try
-                {
+                { 
                     var condition = AccessCondition.GenerateEmptyCondition();
                     var options   = new BlobRequestOptions { RetryPolicy = new ExponentialRetry() };
                     var context   = new OperationContext();
@@ -495,6 +496,8 @@ namespace CloudApi
         /// </summary>
         /// 
         /// <param name="storageLeaseId">The identifier of the lease held on the game state storage item.</param>
+        /// 
+        /// <returns>The current state of the game, if it exists in storage; otherwise, <c>null</c>.</returns>
         /// 
         /// <remarks>
         ///     This method makes no attempt at synchronization; callers are responsible for 

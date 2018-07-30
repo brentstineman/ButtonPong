@@ -2,10 +2,10 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Run Functions Host",
+      "label": "Launch Functions Host",
       "identifier": "runFunctionsHost",
       "type": "shell",
-      "command": "cd api && func host start",
+      "command": "cd api && func host start --debug vscode",
       "options": {
         "env": {
           "languageWorkers:node:arguments": "--inspect=9229",
