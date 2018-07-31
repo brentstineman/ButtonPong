@@ -10,6 +10,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.RetryPolicies;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace CloudApi
 {
@@ -29,6 +30,9 @@ namespace CloudApi
 
         /// <summary>The random number generator to use for selecting active devices to ping.</summary>
         private static readonly Random RandomNumberGenerator = new Random();
+
+        /// <summary>The settings to use for state serialization and deserialization.</summary>
+        private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 
         /// <summary>A reference to the blob storage container that holds game state.</summary>
         private CloudBlobContainer stateContainer = null;
@@ -518,7 +522,7 @@ namespace CloudApi
                     await this.stateBlob.DownloadToStreamAsync(blobStream, leaseCondition, options, context).ConfigureAwait(false);                
                     blobStream.Position = 0;
 
-                    return JsonConvert.DeserializeObject<GameState>(Encoding.UTF8.GetString(blobStream.ToArray()));
+                    return JsonConvert.DeserializeObject<GameState>(Encoding.UTF8.GetString(blobStream.ToArray()), GameStateManager.SerializerSettings);
                 }
 
                 catch (StorageException ex) when (ex.RequestInformation.HttpStatusCode == (int)HttpStatusCode.NotFound)
@@ -550,8 +554,8 @@ namespace CloudApi
         {
             var executeCount = 0;
             var allowRetry   = true;
-
-            using (var blobStream = new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(gameState, Formatting.Indented))))
+            
+            using (var blobStream = new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(gameState, Formatting.Indented, GameStateManager.SerializerSettings))))
             {                
                 while ((allowRetry) && (executeCount <= 1))
                 {    

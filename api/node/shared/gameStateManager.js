@@ -1,4 +1,7 @@
-
+const GameState        = require("./models/gameState");
+const GameActivity     = require("./models/gameActivity");
+const GameDevice       = require("./models/gameDevice");
+const DeviceState      = require("./models/deviceState");
 const ConcurrencyError = require("./errors/concurrencyError");
 const azureStorage     = require("azure-storage");
 const { promisify }    = require("util");
@@ -140,7 +143,8 @@ const safeReleaseLeaseAsync = async (blobClient, lease) => {
  */
 const loadGameStateAsync = async (blobClient, blobLease) => {
     try {
-        return blobClient.getBlobToTextAsync(blobLease.container, blobLease.blob, { leaseId : blobLease.id });
+        const stateBlob = await blobClient.getBlobToTextAsync(blobLease.container, blobLease.blob, { leaseId : blobLease.id });
+        return JSON.parse(stateBlob);
     }
 
     catch (ex) {
@@ -244,6 +248,30 @@ const performStateOperationWithLeaseAsync = async (blobClient, storageContainer,
 };
 
 /**
+ * Determines the state of the specified device.
+ * @static
+ * @private
+ *
+ * @param { object } gameState  The current state of the game.
+ * @param { string } deviceId   The unique identifier of the device to determine the state of.
+ *
+ * @returns { enum }  The state of the device in the context of the game.
+ */
+const determineDeviceState = (gameState, deviceId) => {
+    if ((!deviceId) || (!deviceId.length) || (deviceId.length <= 0)) {
+        return DeviceState.Unknown;
+    }
+
+    const registered = (deviceId in gameState.registeredDevices);
+    const active     = gameState.activeDevices.includes(deviceId);
+
+    return
+       (registered && active) ? DeviceState.RegisteredActive
+     : (registered)           ? DeviceState.RegisteredInactive
+     : DeviceState.NotInGame;
+};
+
+/**
  * Represents the need for persistence of game state; intended only for private, transient use
  * during state management operations.
  * @readonly
@@ -343,8 +371,52 @@ class GameStateManager {
             return [ StatePersistence.DoNotPersistState, gameState ];
         });
 
-        return state;
+        return (state || new GameState({activity : GameActivity.NotStarted }));
     }
+
+    /**
+     * Performs the tasks needed to register a new device with the game.
+     *
+     * @param { object } newDevice  The device to register with the game.
+     *
+     * @returns { enum }  The status of the device in the game.
+     */
+    async registerDeviceAsync(newDevice) {
+        let deviceState = DeviceState.Unknown;
+
+        await this[stateOperationExecutor](gameState => {
+            gameState = gameState || new GameState({ activity: GameActivity.NotStarted });
+
+            // If the game has been started, then the device can't be registered; alert the
+            // caller to the current state of the device.
+
+            if (gameState.activity !== GameActivity.NotStarted) {
+                deviceState = determineDeviceState(gameState, newDevice.deviceId);
+
+                return [ StatePersistence.DoNotPersistState, gameState ];
+            }
+
+            let persist = StatePersistence.DoNotPersistState;
+
+            // If the device wasn't registered, do so now; if it already exists, consider the call successful
+            // but take no action.
+
+            if (!(newDevice.deviceId in gameState.registeredDevices)) {
+                gameState.registeredDevices[newDevice.deviceId] = newDevice
+                persist = StatePersistence.PersistState;
+            }
+
+            if (!gameState.activeDevices.includes(newDevice.deviceId)) {
+                gameState.activeDevices.push(newDevice.deviceId);
+                persist = StatePersistence.PersistState;
+            }
+
+            deviceState = DeviceState.RegisteredActive;
+            return [ persist, gameState ];
+        });
+
+        return deviceState;
+    };
 }
 
 module.exports = GameStateManager;

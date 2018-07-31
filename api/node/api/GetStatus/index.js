@@ -1,4 +1,8 @@
 const GameStateManager = require("../../shared/gameStateManager");
+const config           = require("../../shared/configuration/config");
+
+/** The manager of state to use for processing requests. */
+const gameStateManager = new GameStateManager(config.getSetting(config.storageConnectionStringName), config.getSetting(config.storageContainerName));
 
 /**
  * Provides the API for retrieving a game status.
@@ -12,14 +16,12 @@ const GameStateManager = require("../../shared/gameStateManager");
 module.exports = async function getStatus(context, request) {
     context.log("Get Status function processed a request.");
 
-    const thing = new GameStateManager("DefaultEndpointsProtocol=https;AccountName=squirepong;AccountKey=Yu5mlOScPPhHmt830ms1EPp+NuA3E0rQ8a0+34311XKxuAycko5N6F320HB6Lhl1Ugw56iIBlP6C913CE4z6sA==;EndpointSuffix=core.windows.net", "jesselocal");
-
-    const gameState = await thing.getGameStateAsync();
+    const gameState = await gameStateManager.getGameStateAsync();
 
     const response = {
         status  : 200,
         headers : { "Content-Type" : "application/json" },
-        body    : gameState || { state: "Nothing" }
+        body    : gameState
     };
 
     // NOTE: Due to a bug in the Azure Functions host, because this function returns a promise, the response should be returned directly
