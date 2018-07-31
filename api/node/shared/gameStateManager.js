@@ -296,6 +296,7 @@ class GameStateManager {
     /**
      * Creates an instance of the class, optionally overriding the default
      * attribute values.
+     * @constructor
      *
      * @param { string } storageConnectionString  The connection string to use for the game state blob storage instance.
      * @param { string } storageContainerName     The nme of the blob storage container to use for holding game state.
@@ -360,6 +361,7 @@ class GameStateManager {
 
     /**
      * Performs the actions needed to retrieve a copy of the current game state.
+     * @method
      *
      * @returns { object }  A snapshot of the current state of the game.
      */
@@ -416,7 +418,40 @@ class GameStateManager {
         });
 
         return deviceState;
-    };
+    }
+
+    /**
+     * Performs the tasks needed to start the game, if the game can be started.
+     * @method
+     *
+     * @param { bool } validate  Indicates whether validation should be performed; if >false, the state will be forced to InProgress regardless of current conditions.
+     *
+     * @returns  An array indicating if the game was started as the result of this request and a snapshot of the current state of the game.
+     */
+    async startGameAsync(validate = true) {
+        let currentState = null;
+        let started      = false;
+
+        await this[stateOperationExecutor](gameState => {
+            currentState = gameState || new GameState({ activity: GameActivity.NotStarted });
+
+            // If validation is enabled and the game is already in progress or has less than 2 devices registered, then take no
+            // action.
+
+            if ((validate) && ((currentState === GameState.InProgress) || (Object.keys(currentState.activeDevices).length < 2))) {
+                return [ StatePersistence.DoNotPersistState, currentState ];
+            }
+
+            // Mark the game as started and persist the state.
+
+            currentState.activity = GameActivity.InProgress;
+            started               = true;
+
+            return [ StatePersistence.PersistState, currentState ];
+        });
+
+        return [ started, currentState ];
+    }
 }
 
 module.exports = GameStateManager;

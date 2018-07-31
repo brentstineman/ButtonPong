@@ -26,7 +26,7 @@ namespace CloudApi
         private static TimeSpan maxPingAge = TimeSpan.FromSeconds(
             Int32.Parse(Environment.GetEnvironmentVariable(ConfigurationNames.PingMaxAgeSeconds)));
 
-        /// <summary>The maximum age of a ping before it expires.</summary>
+        /// <summary>The amount of time that a user should be given to respond to a ping on the device.</summary>
         private static int pingTimeout = 
             Int32.Parse(Environment.GetEnvironmentVariable(ConfigurationNames.PingTimeout));
 
