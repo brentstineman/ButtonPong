@@ -102,7 +102,7 @@ namespace CloudApi
 
             // If a new ping was generated, signal the associated device.
 
-            if ((newPing != null) && (currentState.ActiveDevices.Contains(newPing?.DeviceId ?? String.Empty)))
+            if ((newPing != null) && (currentState.ActiveDevices.Contains(newPing.DeviceId ?? String.Empty)))
             {
                 StartGame.communicator
                     .SendPingEventAsync(currentState.RegisteredDevices[newPing.DeviceId], StartGame.pingTimeout)

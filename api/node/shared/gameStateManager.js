@@ -1,9 +1,10 @@
 const GameState        = require("./models/gameState");
 const GameActivity     = require("./models/gameActivity");
-const GameDevice       = require("./models/gameDevice");
+const PingPongData     = require("./models/pingPongData");
 const DeviceState      = require("./models/deviceState");
 const ConcurrencyError = require("./errors/concurrencyError");
 const azureStorage     = require("azure-storage");
+const moment           = require("moment");
 const { promisify }    = require("util");
 
 /** The name of the blob in storage, which holds the game state. */
@@ -426,7 +427,7 @@ class GameStateManager {
      *
      * @param { bool } validate  Indicates whether validation should be performed; if >false, the state will be forced to InProgress regardless of current conditions.
      *
-     * @returns  An array indicating if the game was started as the result of this request and a snapshot of the current state of the game.
+     * @returns { array } An array indicating if the game was started as the result of this request and a snapshot of the current state of the game.
      */
     async startGameAsync(validate = true) {
         let currentState = null;
@@ -451,6 +452,191 @@ class GameStateManager {
         });
 
         return [ started, currentState ];
+    }
+
+    /**
+     * Immediately clears all existing game state, cancelling any game in progress.
+     * @method
+     *
+     * @returns  A snapshot of the current state of the game.
+     */
+    async resetGameAsync() {
+        let currentState = null;
+
+        await this[stateOperationExecutor](gameState => {
+            currentState = new GameState({ activity: GameActivity.NotStarted });
+            return [ StatePersistence.PersistState, currentState ];
+        });
+
+        return currentState;
+    }
+
+    /**
+     * Manages the active ping for the game, expiring a ping that is over the age limit, if one exists.  In the case that
+     * no ping exists or one is deemed expired, a new active ping is generated for the requested device, if specific.
+     * If there was no device specified, a random device will be selected from those currently active in the game.
+     * @method
+     *
+     * @param { int }    maxActivePingAge  The maximum age for an active ping before it expires, in seconds.  If null, any active ping will be immediately expired.
+     * @param { string } deviceId          The device identifer to generate a new ping for; if not specified, a random active device will be selected.
+     *
+     * @returns { array }  An array containing any new ping generated, any active ping expired, and a snapshot of the current state of the game.
+     */
+    async manageActivePing(maxActivePingAge,
+                           deviceId         = null) {
+        let currentState = null;
+        let expiredPing  = null;
+        let newPing      = null;
+
+        await this[stateOperationExecutor](gameState => {
+            currentState = gameState || new GameState({ activity: GameActivity.NotStarted });
+
+            // If the game is not already started or there are no active devices, then no
+            // action can be taken.
+
+            if ((currentState.activity !== GameActivity.InProgress) || (currentState.activeDevices.length <= 0)) {
+                return [ StatePersistence.DoNotPersistState, currentState ];
+            }
+
+            // If there is a current ping and it has either expired or a forced expiration was requested, then
+            // expire it now.
+
+            let persist = StatePersistence.DoNotPersistState;
+
+            const maxPingTime = (currentState.activePing)
+              ? moment(currentState.activePing.eventTimeUtc).utc().add((maxActivePingAge || 0), "seconds")
+              : moment().utc().add(1, "minutes");
+
+            const now = moment().utc();
+
+            if ((currentState.activePing !== null) &&
+               ((maxActivePingAge === null) || (now.isSameOrAfter(maxPingTime)))) {
+
+                expiredPing                = gameState.activePing;
+                persist                    = StatePersistence.PersistState;
+                currentState.activeDevices = currentState.activeDevices.filter(item => item !== expiredPing.deviceId);
+                currentState.activePing    = null;
+            }
+
+            // If there is only a single remaining active device, it is the game's winner.  The game is now over.  Short circuit so
+            // that no new ping is generated.
+
+            if (currentState.activeDevices.length <= 1) {
+
+                currentState.activity        = GameActivity.Complete;
+                currentState.winningDeviceId = (currentState.activeDevices.pop() || null);
+                currentState.activeDevices   = [];
+                currentState.activePing      = null;
+
+                return [ StatePersistence.PersistState, currentState ];
+            }
+
+            // If there was a requested device to ping, but that device is not active, no
+            // ping can be generated.
+
+            if ((deviceId) && (deviceId.length > 0) && (!currentState.activeDevices.includes(deviceId))) {
+                return [ persist, currentState ];
+            }
+
+            // If a ping is needed, then generate one; otherwise, no further action
+            // is necessary.
+
+            if (currentState.activePing === null) {
+                persist              = StatePersistence.PersistState;
+                newPing              = this.generatePing(currentState, deviceId);
+                gameState.activePing = newPing;
+
+                gameState.pingsSent.push(newPing);
+            }
+
+            return [ persist, currentState ];
+        });
+
+        return [ newPing, expiredPing, currentState ];
+    }
+
+    /**
+     * Records pong data in the game state for the specified device.  If the device is not associated with the
+     * active ping or is not active in the game, then no action will be taken.
+     * @method
+     *
+     * @param { string } deviceId          The identifier of the device to record a pong from.
+     * @param { int }    maxActivePingAge  The maximum age for an active ping before it expires, in seconds.  If null, any active ping will be immediately expired.
+     *
+     * @returns { array }  An array containing a boolean that indicates if the ping was accepted and a snapshot of the current state of the game.
+     */
+    async recordPong(deviceId,
+                    maxActivePingAge) {
+
+        let currentState = null;
+        let pongAccepted = false;
+
+        await this[stateOperationExecutor](gameState => {
+            currentState = gameState || new GameState({ activity: GameActivity.NotStarted });
+
+            // If the game is not already started, there are no active devices, the requested device is not active,
+            // the specified ping is no longer the current, or the active ping has expired, then no action can be taken.
+
+            const maxPingTime = (currentState.activePing)
+              ? moment(currentState.activePing.eventTimeUtc).utc().add((maxActivePingAge || 0), "seconds")
+              : moment().utc().add(1, "minutes");
+
+            const now = moment().utc();
+
+            if ((currentState.activity !== GameActivity.InProgress) ||
+                (!currentState.activePing)                          ||
+                (currentState.activePing.deviceId !== deviceId)     ||
+                (!currentState.activeDevices.includes(deviceId))    ||
+                (now.isSameOrAfter(maxPingTime))) {
+
+                return [ StatePersistence.DoNotPersistState, currentState ];
+            }
+
+            // Generate the Pong to record.
+
+            currentState.pongsReceived.push(
+                new PingPongData({
+                    deviceId     : deviceId,
+                    eventTimeUtc : moment().utc().toISOString()
+                })
+            );
+
+            currentState.activePing = null;
+            pongAccepted            = true;
+
+            return [ StatePersistence.PersistState, currentState ];
+        });
+
+        return [ pongAccepted, currentState ];
+    }
+
+    /**
+     * Generates ping data for use in the game state for the requested device.  If there was
+     * no device specified, a random device will be selected from those currently active in the game.
+     * @method
+     *
+     * @param { object } gameState  The current state of the game.
+     * @param { string } deviceId   The device to generate the ping for; if not specified, a random active device will be chosen.
+     *
+     * @returns { object }  The generated ping data.
+     *
+     * NOTE: This method does not update the game state with the generated ping; responsiblity for state
+     *       updates is assumed to be purview of the caller.
+     */
+    generatePing(gameState,
+                 deviceId = null) {
+
+        let pingDevice = deviceId;
+
+        if ((!pingDevice) || (pingDevice.length <= 0)) {
+            const randomDeviceIndex = Math.floor(Math.random() * gameState.activeDevices.length);
+            pingDevice = gameState.activeDevices[randomDeviceIndex];
+        }
+
+        return new PingPongData({
+            deviceId     : pingDevice,
+            eventTimeUtc : moment().utc().toISOString()
+        });
     }
 }
 

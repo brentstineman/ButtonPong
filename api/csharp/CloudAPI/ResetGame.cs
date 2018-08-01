@@ -34,7 +34,7 @@ namespace CloudApi
         {
             logger.LogInformation($"{ nameof(ResetGame) } processed a request.");
 
-            var gameState = await ResetGame.stateManager.ResetGame();
+            var gameState = await ResetGame.stateManager.ResetGameAsync();
 
             return new OkObjectResult(gameState);
         }
