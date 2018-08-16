@@ -351,7 +351,7 @@ class GameStateManager {
                 writable     : false,
                 enumerable   : false,
                 configurable : false
-            },
+            }
         });
 
         // Initialize the private class members.

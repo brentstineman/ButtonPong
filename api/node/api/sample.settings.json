@@ -7,6 +7,7 @@
     "AzureWebJobsDashboard": "<connectionstring>",
     "storageConnString": "<connectionstring>",
     "storageContainer": "gamedata",
+    "deviceWebHookUriTemplateName" : "https://api.particle.io/v1/devices/{deviceId}/{operation}?access_token={accessToken}",
     "pingManagerSchedule" : "*/45 * * * * *",
     "pingMaxAgeSeconds": 20,
     "pingTimeoutSeconds": 5

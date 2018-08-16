@@ -10,6 +10,9 @@ const pingMaxAgeName = "pingMaxAgeSeconds";
 /** The name of the configuration setting that holds the value of the timeout for a button to respond to an active ping, in seconds. */
 const pingTimeoutName = "pingTimeoutSeconds";
 
+/** The name of the Particle device web hook URI template string. */
+const deviceWebHookUriTemplateName = "deviceWebHookUriTemplateName";
+
 /**
  * Reads the requested configuration setting from the local settings file or from the
  * runtime environment.
@@ -26,5 +29,6 @@ module.exports = {
     storageContainerName,
     pingMaxAgeName,
     pingTimeoutName,
+    deviceWebHookUriTemplateName,
     getSetting
 };
