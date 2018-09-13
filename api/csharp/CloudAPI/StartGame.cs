@@ -30,7 +30,7 @@ namespace CloudApi
         private static int pingTimeout = 
             Int32.Parse(Environment.GetEnvironmentVariable(ConfigurationNames.PingTimeout));
 
-        /// <summary>The communicator to use for interacting with the game devices..</summary>
+        /// <summary>The communicator to use for interacting with the game devices.</summary>
         private static IDeviceCommunicator communicator = new ParticleDeviceCommunicator();
 
         ///   Exposes the function API.
@@ -106,7 +106,7 @@ namespace CloudApi
             {
                 StartGame.communicator
                     .SendPingEventAsync(currentState.RegisteredDevices[newPing.DeviceId], StartGame.pingTimeout)
-                    .FireAndForget(exception => logger.LogError(exception, $"An exception occurred signaling device: { expired.DeviceId } of its elimination"));
+                    .FireAndForget(exception => logger.LogError(exception, $"An exception occurred signaling device: { expired.DeviceId } of being pinged."));
             }
 
             return new OkObjectResult(currentState);
