@@ -145,7 +145,7 @@ const safeReleaseLeaseAsync = async (blobClient, lease) => {
 const loadGameStateAsync = async (blobClient, blobLease) => {
     try {
         const stateBlob = await blobClient.getBlobToTextAsync(blobLease.container, blobLease.blob, { leaseId : blobLease.id });
-        return JSON.parse(stateBlob);
+        return ((stateBlob) && (stabeBlob.length > 0)) ? JSON.parse(stateBlob) : null;
     }
 
     catch (ex) {
