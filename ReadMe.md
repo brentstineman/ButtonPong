@@ -41,32 +41,21 @@ As has been mentioned, this game implementation stops short of many features tha
 * **root**
   _The root contains the overall repository configuration files, license, and general structure._
 
-    &nbsp;
 
   * **api**
     _The container for implementation of the game's server-side API, in various languages._
 
-    &nbsp;
-
     * **testing**
       _Assets related to testing of the API, such as collection and parameter definitions for Postman._
-
-      &nbsp;
 
     * **csharp**
       _The C# implementation of the game API.  Please see the accompanying ReadMe in this directory for information specific to this implementation._
 
-      &nbsp;
-
   * **firmware**
     _The container for firmware implementing the game on connected devices._
 
-    &nbsp;
-
     * **integrations**
       _Assets related to defining the event integrations for connecting the device with the API. For the Particle Internet Button, these integrations need to be registered via the Particle Portal or command line._
-
-      &nbsp;
 
     * **src**
       _The implementation of the device game client.  Please see the accompanying ReadMe in this directory for information specific to this implementation._
@@ -77,6 +66,6 @@ The artifacts in this repository are offered under the MIT license, as described
 
 ## Contributing
 
-This repository accepts pull requests, but only for the purpose of improving the hack experience. The intention is to provide a simple game that could be extended, not to create a production ready game with lots of complexity. Please keep this in mind when submitting issues or PRs.
+This repository accepts pull requests, but only for the purpose of improving the hack experience. The intention is to provide a simple game that could be extended, not to create a production ready game with lots of complexity. Please keep this in mind when submitting issues or pull requests.
 
 Contributors are expected to observe a code of conduct at all times, as described in the accompanying [conduct](./CONDUCT.md "code of conduct") file.
