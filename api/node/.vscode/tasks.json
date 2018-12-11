@@ -1,0 +1,39 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Launch Functions Host",
+      "identifier": "runFunctionsHost",
+      "type": "shell",
+      "command": "cd api && func host start --debug vscode",
+      "options": {
+        "env": {
+          "languageWorkers:node:arguments": "--inspect=9229",
+          "languageWorkers:node:Debug": "--inspect=9229"
+        }
+      },
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": [
+        {
+          "owner": "azureFunctions",
+          "pattern": [
+            {
+              "regexp": "\\b\\B",
+              "file": 1,
+              "location": 2,
+              "message": 3
+            }
+          ],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "^.*Stopping host.*",
+            "endsPattern": "^.*Job host started.*"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 namespace CloudApi
 {
     /// <summary>
-    ///   Provides the API for regisering a device "pong" response.
+    ///   Provides the API for registering a device "pong" response.
     /// </summary>
     /// 
     public static class Pong
@@ -54,7 +54,7 @@ namespace CloudApi
             // Attempt to register the pong, which may or may not be accepted depending on the curent state.  If the pong was not accepted, then
             // take no further action.   
 
-            var (pongAccepted, pongState) = await Pong.stateManager.RecordPong(device.DeviceId);
+            var (pongAccepted, pongState) = await Pong.stateManager.RecordPong(device.DeviceId, Pong.maxPingAge);
 
             if (!pongAccepted)
             {

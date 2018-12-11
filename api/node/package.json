@@ -1,0 +1,40 @@
+{
+  "name": "button-pong-api",
+  "version": "0.0.1-alpha",
+  "description": "The NodeJS version of the Button Pong API, providing the operations detailed in the main API source ReadMe",
+  "license": "MIT",
+  "repository": "https://github.com/brentstineman/ButtonPong",
+  "author": "Brent Stineman",
+  "contributors": [
+    "Jesse Squire"
+  ],
+
+  "main": "api/host.json",
+
+  "sideEffects": [
+  ],
+
+  "config": {
+    "environment": "local",
+    "debugPort": 9229
+  },
+
+  "scripts": {
+    "start": "npm run env/init -s -- npm run exec",
+    "exec": "cd api && func host start",
+    "env/init": "cross-var cross-env NODE_ENV=$npm_package_config_environment NODE_OPTIONS=--inspect=$npm_package_config_debugPort"
+  },
+
+  "dependencies": {
+    "axios": "^0.18.0",
+    "azure-storage": "^2.10.0",
+    "moment": "^2.22.2"
+  },
+
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "cross-var": "^1.1.0",
+    "nodemon": "^1.17.5",
+    "npm-run-all": "^4.1.3"
+  }
+}

@@ -1,7 +1,7 @@
 ﻿namespace CloudApi.Models
 {
     /// <summary>
-    ///   The status of a device, normally occuring during a registration-related operation.
+    ///   The status of a device, normally occurring during a registration-related operation.
     /// </summary>
     /// 
     public class DeviceStatus

@@ -26,11 +26,11 @@ namespace CloudApi
         private static TimeSpan maxPingAge = TimeSpan.FromSeconds(
             Int32.Parse(Environment.GetEnvironmentVariable(ConfigurationNames.PingMaxAgeSeconds)));
 
-        /// <summary>The maximum age of a ping before it expires.</summary>
+        /// <summary>The amount of time that a user should be given to respond to a ping on the device.</summary>
         private static int pingTimeout = 
             Int32.Parse(Environment.GetEnvironmentVariable(ConfigurationNames.PingTimeout));
 
-        /// <summary>The communicator to use for interacting with the game devices..</summary>
+        /// <summary>The communicator to use for interacting with the game devices.</summary>
         private static IDeviceCommunicator communicator = new ParticleDeviceCommunicator();
 
         ///   Exposes the function API.
@@ -45,7 +45,7 @@ namespace CloudApi
         public async static Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "PUT", Route = "game")]HttpRequestMessage request, 
                                                      ILogger logger)
         {
-            logger.LogInformation($"{ nameof(Pong) } processed a request.");
+            logger.LogInformation($"{ nameof(StartGame) } processed a request.");
 
             // Attempt to start the game, validating the current state meets the required
             // conditions.
@@ -102,11 +102,11 @@ namespace CloudApi
 
             // If a new ping was generated, signal the associated device.
 
-            if ((newPing != null) && (currentState.ActiveDevices.Contains(newPing?.DeviceId ?? String.Empty)))
+            if ((newPing != null) && (currentState.ActiveDevices.Contains(newPing.DeviceId ?? String.Empty)))
             {
                 StartGame.communicator
                     .SendPingEventAsync(currentState.RegisteredDevices[newPing.DeviceId], StartGame.pingTimeout)
-                    .FireAndForget(exception => logger.LogError(exception, $"An exception occurred signaling device: { expired.DeviceId } of its elimination"));
+                    .FireAndForget(exception => logger.LogError(exception, $"An exception occurred signaling device: { expired.DeviceId } of being pinged."));
             }
 
             return new OkObjectResult(currentState);

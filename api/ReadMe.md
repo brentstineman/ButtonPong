@@ -10,7 +10,6 @@ The API consists of several Azure Functions, each implementing a single member o
   &nbsp;&nbsp;_**Route:**_ /api/game
   &nbsp;&nbsp;_**Verb:**_ GET
 
-  &nbsp;
 
 * **RegisterDevice**
   _This endpoint allows callers to register a device as a participant of the game.  The registration requires both the device identifier and an access token that can be used for communicating with the device via its published integrations._
@@ -18,7 +17,6 @@ The API consists of several Azure Functions, each implementing a single member o
   &nbsp;&nbsp;_**Route:**_ /api/devices
   &nbsp;&nbsp;_**Verb:**_ POST
 
-  &nbsp;
 
 * **StartGame**
   _This endpoint allows callers to request that a game begin.  Validation will be performed to ensure that there are at least two registered devices and that no game is currently in progress._
@@ -26,7 +24,6 @@ The API consists of several Azure Functions, each implementing a single member o
   &nbsp;&nbsp;_**Route:**_ /api/game
   &nbsp;&nbsp;_**Verb:**_ PUT
 
-  &nbsp;
 
 * **ResetGame**
   _This endpoint allows callers to request that a game immediately be forced to reset; all activities will stop, all devices will be unregistered, and the game will return to an uninitialized state.  Game activities can be resumed by registering devices and starting a new game._
@@ -34,7 +31,6 @@ The API consists of several Azure Functions, each implementing a single member o
   &nbsp;&nbsp;_**Route:**_ /api/game
   &nbsp;&nbsp;_**Verb:**_ DELETE
 
-  &nbsp;
 
 * **Ping**
   _This endpoint allows callers to register a pong that is expected in response to a "ping."  Validation will be performed to ensure that the sender is the currently active ping and that a game is currently in progress._
@@ -42,7 +38,6 @@ The API consists of several Azure Functions, each implementing a single member o
   &nbsp;&nbsp;_**Route:**_ /api/pong
   &nbsp;&nbsp;_**Verb:**_ PUT
 
-  &nbsp;
 
 * **PingManager**
   _This function is not a callable endpoint, instead running on a schedule with responsibility for managing the active ping and transitioning game state if a pong has not be received in the expected response period.  This function ensures that communication or connection failures for a specific device do not crash the game as a whole, and that individual devices are not left responsible for understanding and influencing the state of the game for others._
@@ -69,32 +64,26 @@ The API depends on the following application settings, which must be configured 
 * **AzureWebJobsStorage**
   _The fully qualified connection string to the Azure Storage account to be used for storing system-owned infrastructure and diagnostics information._
 
-  &nbsp;
 
 * **AzureWebJobsDashboard**
   _The fully qualified connection string to the Azure Storage account to be used for storing system-generated dashboard information._
 
-  &nbsp;
 
 * **storageConnString**
   _The fully qualified connection string to the Azure Storage account to be used for storing game state information in blob storage._
 
-  &nbsp;
 
 * **storageContainer**
   _The name of the blob storage container in which to store game state information.  Recommended: "gamedata"._
 
-  &nbsp;
 
 * **pingManagerSchedule**
   _The CRON expression that specifies the schedule on which the ping manager should run.  Recommended: "*/45 * * * * *", which equates to "every 45 seconds"._
 
-  &nbsp;
 
 * **pingMaxAgeSeconds**
   _The maximum age, in seconds, of an active ping before it expires and the device is eliminated.  Recommended: "12"._
 
-  &nbsp;
 
 * **pingTimeoutSeconds**
   _The amount of time , in seconds, that is signaled to devices as the suggested timeout when awaiting for a pong to be triggered.  This value should be less than the configured "pingMaxAgeSeconds" in order to allow the button UI experience to make sense.  It should allow for some additional time for network latency.  Recommended: "5"._

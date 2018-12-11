@@ -10,14 +10,16 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.RetryPolicies;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace CloudApi
 {
     /// <summary>
-    /// A simple state manager for the game. Stores information in Azure Blob storage
-    /// the first entry in the list stores if the game is running or not
-    /// subsequent entries are the list of devices playing the game
+    ///   A simple state manager for the game. Stores information in Azure Blob storage
+    ///   the first entry in the list stores if the game is running or not
+    ///   subsequent entries are the list of devices playing the game
     /// </summary>
+    /// 
     internal class GameStateManager
     {
         /// <summary>The name of the blob in storage which holds the game state.</summary>
@@ -28,6 +30,9 @@ namespace CloudApi
 
         /// <summary>The random number generator to use for selecting active devices to ping.</summary>
         private static readonly Random RandomNumberGenerator = new Random();
+
+        /// <summary>The settings to use for state serialization and deserialization.</summary>
+        private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 
         /// <summary>A reference to the blob storage container that holds game state.</summary>
         private CloudBlobContainer stateContainer = null;
@@ -57,7 +62,6 @@ namespace CloudApi
 
             this.stateBlob            = this.stateContainer.GetBlockBlobReference(GameStateManager.StateBlobName);
             this.stateLeaseLengthTime = stateLeaseLengthTime ?? GameStateManager.DefaultLeaseLength;
-
         }
 
         /// <summary>
@@ -271,7 +275,7 @@ namespace CloudApi
         /// 
         /// <returns>A snapshot of the current state of the game.</returns>
         /// 
-        public async Task<GameState> ResetGame()
+        public async Task<GameState> ResetGameAsync()
         {
             var currentState  = default(GameState);
 
@@ -384,10 +388,12 @@ namespace CloudApi
         /// </summary>
         /// 
         /// <param name="deviceId">The identifier of the device to record a pong from.</param>
+        /// <param name="maxActivePingAge">The maximum age for an active ping before it expires.</param>
         /// 
         /// <returns>A tuple indicating of the pong was accepted and containing a snapshot of the current state of the game.</returns>
         /// 
-        public async Task<(bool, GameState)> RecordPong(string deviceId)
+        public async Task<(bool, GameState)> RecordPong(string   deviceId,
+                                                        TimeSpan maxActivePingAge)
         {
             var currentState = default(GameState);
             var pongAccepted = false;
@@ -399,19 +405,21 @@ namespace CloudApi
 
                 gameState = gameState ?? new GameState(GameActivity.NotStarted);
                 
-                // If the game is not already started, there are no active devices, the requested device is not active, 
-                // or the specified ping is no longer the current, then no action can be taken.
+                // If the game is not already started, there are no active devices, the requested device is not active,
+                // the specified ping is no longer the current, or the active ping has expired, then no action can be taken.
                 
                 if ((gameState.Activity != GameActivity.InProgress)       || 
-                    (gameState.ActivePing?.DeviceId != deviceId)          ||
-                    (!gameState.ActiveDevices.Contains(deviceId)))
+                    (gameState.ActivePing == null)                        ||
+                    (gameState.ActivePing.DeviceId != deviceId)           ||
+                    (!gameState.ActiveDevices.Contains(deviceId))         ||
+                    (now.Subtract(gameState.ActivePing.EventTimeUtc) >= maxActivePingAge))
                     
                 {   
                     currentState = gameState;
                     return (StatePersistence.DoNotPersistState, gameState);
                 }
 
-                // If there was no specified device, choose one randomly.
+                // Generate the pong data to record.
                                 
                 var pingPongData = new PingPongData
                 {
@@ -447,7 +455,7 @@ namespace CloudApi
             try
             {
                 try
-                {
+                { 
                     var condition = AccessCondition.GenerateEmptyCondition();
                     var options   = new BlobRequestOptions { RetryPolicy = new ExponentialRetry() };
                     var context   = new OperationContext();
@@ -497,6 +505,8 @@ namespace CloudApi
         /// 
         /// <param name="storageLeaseId">The identifier of the lease held on the game state storage item.</param>
         /// 
+        /// <returns>The current state of the game, if it exists in storage; otherwise, <c>null</c>.</returns>
+        /// 
         /// <remarks>
         ///     This method makes no attempt at synchronization; callers are responsible for 
         ///     aquiring and managing blob leases for their specific operation.
@@ -516,7 +526,7 @@ namespace CloudApi
                     await this.stateBlob.DownloadToStreamAsync(blobStream, leaseCondition, options, context).ConfigureAwait(false);                
                     blobStream.Position = 0;
 
-                    return JsonConvert.DeserializeObject<GameState>(Encoding.UTF8.GetString(blobStream.ToArray()));
+                    return JsonConvert.DeserializeObject<GameState>(Encoding.UTF8.GetString(blobStream.ToArray()), GameStateManager.SerializerSettings);
                 }
 
                 catch (StorageException ex) when (ex.RequestInformation.HttpStatusCode == (int)HttpStatusCode.NotFound)
@@ -548,8 +558,8 @@ namespace CloudApi
         {
             var executeCount = 0;
             var allowRetry   = true;
-
-            using (var blobStream = new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(gameState, Formatting.Indented))))
+            
+            using (var blobStream = new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(gameState, Formatting.Indented, GameStateManager.SerializerSettings))))
             {                
                 while ((allowRetry) && (executeCount <= 1))
                 {    
@@ -678,6 +688,7 @@ namespace CloudApi
         ///   Represents the need for persistence of game state; intended only for private
         ///   use.
         /// </summary>
+        /// 
         private enum StatePersistence
         {
             PersistState,

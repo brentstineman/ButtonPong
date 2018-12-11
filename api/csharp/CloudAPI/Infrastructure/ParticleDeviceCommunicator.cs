@@ -97,7 +97,7 @@ namespace CloudApi.Infrastructure
         private static async Task InvokeWebHook(GameDevice device, 
                                                 string     function, 
                                                 string     requestBody = null)
-        {
+        {                      $"https://api.particle.io/v1/devices/${device}/${operation}?access_token=${token}"
             var uri  = new Uri($"https://api.particle.io/v1/devices/{device.DeviceId}/{function}?access_token={device.AccessToken}");
             var body = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>("args", requestBody) });
 

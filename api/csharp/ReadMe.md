@@ -1,6 +1,6 @@
 # Button Pong API - C# Version
 
-# Deploy the API via Visual Studio
+## Deploy the API via Visual Studio
 
 The C# version of the API has been provided as a Visual Studio 2017 solution. Using this solution, any edition of the [Visual Studio 2017 IDE](https://www.visualstudio.com/downloads/), and the [Azure Functions and Web Jobs Tools extension](https://marketplace.visualstudio.com/items?itemName=VisualStudioWebandAzureTools.AzureFunctionsandWebJobsTools), you can quickly deploy the function based API to Azure.
 
